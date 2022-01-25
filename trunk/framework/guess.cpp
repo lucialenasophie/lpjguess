@@ -10,6 +10,7 @@
 #include <sstream>
 #include "config.h"
 #include "guess.h"
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES WITH EXTERNAL LINKAGE
@@ -681,6 +682,8 @@ Stand::Stand(int i, Gridcell* gc, Soiltype& st, landcovertype landcoverX, int np
 	for(int i=0;i<nst;i++)
 		transfer_area_st[i] = 0.0;
 	seed = randomseed;
+
+    std::cout << "\nSeed is " << randomseed;
 
 	stid = 0;
 	pftid = -1;
