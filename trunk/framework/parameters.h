@@ -81,7 +81,11 @@ typedef enum {ROOTDIST_FIXED, ROOTDIST_JACKSON} rootdisttype;
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // Global instruction file parameters
+/// Custom parameters
 
+extern int randomseed;
+
+///
 /// Title for this run
 extern xtring title;
 

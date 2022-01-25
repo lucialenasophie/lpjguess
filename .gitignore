@@ -1,4 +1,4 @@
-cmake-build-debug/*
+*/cmake-build-debug/*
 guess.log
 **/CMakeFiles/*
 **/Makefile
@@ -12,3 +12,5 @@ data_unused
 *.out
 branches
 tags
+.idea
+*/build/*
