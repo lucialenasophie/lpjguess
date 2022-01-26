@@ -28,6 +28,7 @@
 #include "soilmethane.h"
 
 #include <memory>
+#include <iostream>
 
 /// Prints the date and time together with the name of this simulation
 void print_logfile_heading() {
@@ -53,6 +54,8 @@ void print_logfile_heading() {
  */
 void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 
+
+
 	// Update daily climate drivers etc
 	dailyaccounting_gridcell(gridcell);
 
@@ -77,7 +80,6 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 
 		// START OF LOOP THROUGH STANDS
 		Stand& stand = *gc_itr;
-
 		dailyaccounting_stand(stand);
 
 		stand.firstobj();
@@ -147,7 +149,9 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 				// For each patch ...
 				Patch& patch = stand.getobj();
 				// Establishment, mortality and disturbance by fire
+                std::cout << "\nYear " << date.year << ": stand.seed is " << stand.seed << " before veg dyn of patch " << patch.id;
 				vegetation_dynamics(stand, patch);
+                std::cout << "\nYear " << date.year << ": stand.seed is " << stand.seed << " after veg dyn of patch " << patch.id;
 				stand.nextobj();
 			}
 		}
