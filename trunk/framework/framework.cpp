@@ -222,8 +222,6 @@ int framework(const CommandLineArguments& args) {
 		// Create and initialise a new Gridcell object for each locality
 		Gridcell gridcell;
 
-        std::cout << "\nInitiated gridcell with gridcell.seed = " << gridcell.seed;
-
 		// Call input module to obtain latitude and driver data for this grid cell.
 		if (!input_module->getgridcell(gridcell)) {
 			break;
@@ -232,13 +230,9 @@ int framework(const CommandLineArguments& args) {
 		// Initialise certain climate and soil drivers
 		gridcell.climate.initdrivers(gridcell.get_lat());
 
-        std::cout << "\nAfter initiation of climate drivers gridcell.seed = " << gridcell.seed;
-
 		// Read landcover and cft fraction data from 
 		// data files for the spinup period and create stands
 		landcover_init(gridcell, input_module.get());
-
-        std::cout << "\nAfter landcover_init() gridcell.seed = " << gridcell.seed;
 
 		if (restart) {
 			// Get the whole grid cell from file...
@@ -246,13 +240,12 @@ int framework(const CommandLineArguments& args) {
 			// ...and jump to the restart year
 			date.year = state_year;
 
-            std::cout << "\nAfter restart is true and block executed, gridcell.seed = " << gridcell.seed;
+            // Add randomseed to gridcell, otherwise old seed from state file is used
+            gridcell.seed = randomseed;
+
+            std::cout << "\nAfter reassigning randomseed, gridcell.seed = " << gridcell.seed;
+
 		}
-
-        // Add randomseed to gridcell, otherwise old seed from state file is used
-        gridcell.seed = randomseed;
-
-        std::cout << "\nAfter reassigning randomseed, gridcell.seed = " << gridcell.seed;
 
 		// Call input/output to obtain climate, insolation and CO2 for this
 		// day of the simulation. Function getclimate returns false if last year
