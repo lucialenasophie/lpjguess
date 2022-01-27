@@ -31,6 +31,7 @@
 #include "vegdynam.h"
 #include "growth.h"
 #include "driver.h"
+#include <iostream>
 
 
 /// Upper LAI limit for wetland species. No limit: 0 //TODO remove this after daily allocation.
@@ -1558,7 +1559,9 @@ void vegetation_dynamics(Stand& stand,Patch& patch, Gridcell& gridcell) {
 										   date.year <= patch.soil.solvesomcent_endyr;
 
 			if (patch.age && !during_century_solvesom && date.year != stand.clone_year) {
-				disturbance(patch,1.0 / distinterval, gridcell);
+
+        std::cout << "\nDisturbance probability is: " << gridcell.climate.distprob;
+				disturbance(patch,gridcell.climate.distprob, gridcell);
 				if (patch.disturbed) {
 					return; // no mortality or establishment this year
 				}

@@ -1067,6 +1067,7 @@ bool CFInput::getclimate(Gridcell& gridcell) {
 	}
 
 	climate.co2 = co2[date.get_calendar_year()];
+    climate.distprob = distprob[date.get_calendar_year()];
 
 	if (date.day == 0) {
 		populate_daily_arrays(gridcell);

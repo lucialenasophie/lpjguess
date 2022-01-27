@@ -837,6 +837,9 @@ public:
 	/// latitude (degrees; +=north, -=south)
 	double lat;
 
+    ///disturbance probability
+    double distprob;
+
 	/// Insolation today, see also instype
 	double insol;
 
