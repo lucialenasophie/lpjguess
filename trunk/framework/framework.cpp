@@ -55,8 +55,6 @@ void print_logfile_heading() {
  */
 void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 
-
-
 	// Update daily climate drivers etc
 	dailyaccounting_gridcell(gridcell);
 
@@ -151,8 +149,6 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 				// For each patch ...
 				Patch& patch = stand.getobj();
 				// Establishment, mortality and disturbance by fire
-                std::cout << "\nEntering veg_dyn with gridcell.seed=" << gridcell.seed;
-                std::cout << "\nEntering veg_dyn with stand.seed=" << stand.seed;
 				vegetation_dynamics(stand, patch, gridcell);
 				stand.nextobj();
 			}
@@ -243,8 +239,6 @@ int framework(const CommandLineArguments& args) {
             // Add randomseed to gridcell, otherwise old seed from state file is used
             gridcell.seed = randomseed;
 
-            std::cout << "\nAfter reassigning randomseed, gridcell.seed = " << gridcell.seed;
-
 		}
 
 		// Call input/output to obtain climate, insolation and CO2 for this
@@ -254,8 +248,6 @@ int framework(const CommandLineArguments& args) {
 		while (input_module->getclimate(gridcell)) {
 
 			// START OF LOOP THROUGH SIMULATION DAYS
-
-            std::cout << "\nEntering simulate_day() with gridcell.seed=" << gridcell.seed;
 
 			simulate_day(gridcell, input_module.get());
 
