@@ -19,6 +19,7 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
+#include <iostream>
 
 REGISTER_INPUT_MODULE("cf", CFInput)
 
@@ -370,6 +371,7 @@ void CFInput::init() {
 
 	// Read CO2 data from file
 	co2.load_file(param["file_co2"].str);
+    distprob.load_file(param["file_dist"].str);
 
 	// Try to open the NetCDF files
 	try {

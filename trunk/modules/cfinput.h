@@ -107,7 +107,7 @@ private:
 	 * more information.
 	 */
 	GlobalCO2File co2;
-
+    GlobalCO2File distprob;
 	// The variables
 
 	GuessNC::CF::GridcellOrderedVariable* cf_temp;
