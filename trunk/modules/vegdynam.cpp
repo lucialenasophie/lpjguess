@@ -348,8 +348,7 @@ void establishment_lpj(Stand& stand,Patch& patch) {
 }
 
 
-void establishment_guess(Stand& stand,Patch& patch) {
-
+void establishment_guess(Stand& stand,Patch& patch, Gridcell& gridcell) {
 	// DESCRIPTION
 	// Establishment in cohort or individual mode.
 	// Establishes new tree saplings and simulates grass population increase each
@@ -597,7 +596,7 @@ void establishment_guess(Stand& stand,Patch& patch) {
 					// Actual number of new saplings drawn from the Poisson distribution
 					// (except cohort mode with stochastic establishment disabled)
 
-					if (ifstochestab && !force_planting || vegmode==INDIVIDUAL) nsapling=randpoisson(est, stand.seed);
+					if (ifstochestab && !force_planting || vegmode==INDIVIDUAL) nsapling=randpoisson(est, gridcell.seed);
 					else nsapling=est;
 
 					if (vegmode==COHORT) {
@@ -914,7 +913,7 @@ void mortality_lpj(Stand& stand, Patch& patch, const Climate& climate, double fi
 }
 
 
-void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double fireprob) {
+void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double fireprob, Gridcell& gridcell) {
 
 	// DESCRIPTION
 	// Mortality in cohort and individual modes.
@@ -1017,7 +1016,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 
 		// Impose fire in this patch with probability 'fireprob'
 
-		if (randfrac(stand.seed)<fireprob) {
+		if (randfrac(gridcell.seed)<fireprob) {
 
 			// Loop through individuals
 
@@ -1060,7 +1059,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 						nindiv_prev=nindiv;
 
 						for (i=0;i<nindiv_prev;i++)
-							if (randfrac(stand.seed)>indiv.pft.fireresist) nindiv--;
+							if (randfrac(gridcell.seed)>indiv.pft.fireresist) nindiv--;
 
 						if (nindiv_prev)
 							frac_survive=(double)nindiv/(double)nindiv_prev;
@@ -1217,7 +1216,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 					nindiv_prev=nindiv;
 
 					for (i=0;i<nindiv_prev;i++)
-						if (randfrac(stand.seed)<mort) nindiv--;
+						if (randfrac(gridcell.seed)<mort) nindiv--;
 
 					if (nindiv_prev)
 						frac_survive=(double)nindiv/(double)nindiv_prev;
@@ -1471,7 +1470,7 @@ void fire(Patch& patch,double& fireprob) {
 // Generic patch-destroying disturbance with a prescribed probability
 // Internal function - do not call from framework
 
-void disturbance(Patch& patch, double disturb_prob) {
+void disturbance(Patch& patch, double disturb_prob, Gridcell& gridcell) {
 
 	// DESCRIPTION
 	// Destroys all biomass in a patch with a certain stochastic probability.
@@ -1481,7 +1480,7 @@ void disturbance(Patch& patch, double disturb_prob) {
 	// INPUT PARAMETER
 	// disturb_prob = the probability of a disturbance this year
 
-	if (randfrac(patch.stand.seed)<disturb_prob) {
+	if (randfrac(gridcell.seed)<disturb_prob) {
 
 		Vegetation& vegetation = patch.vegetation;
 
@@ -1507,7 +1506,7 @@ void disturbance(Patch& patch, double disturb_prob) {
 // Should be called by framework at the end of each simulation year, after vegetation,
 // climate and soil attributes have been updated
 
-void vegetation_dynamics(Stand& stand,Patch& patch) {
+void vegetation_dynamics(Stand& stand,Patch& patch, Gridcell& gridcell) {
 
 	// DESCRIPTION
 	// Implementation of fire disturbance and population dynamics (establishment and
@@ -1544,7 +1543,7 @@ void vegetation_dynamics(Stand& stand,Patch& patch) {
 
 		// Disturbance when N limitation is switched on to get right pft composition under N limitation faster
 		if (ifcentury && ifnlim && date.year == freenyears){
-			disturbance(patch, 1.0);
+			disturbance(patch, 1.0, gridcell);
 			if (patch.disturbed) {
 				return; // no mortality or establishment this year
 			}
@@ -1559,7 +1558,7 @@ void vegetation_dynamics(Stand& stand,Patch& patch) {
 										   date.year <= patch.soil.solvesomcent_endyr;
 
 			if (patch.age && !during_century_solvesom && date.year != stand.clone_year) {
-				disturbance(patch,1.0 / distinterval);
+				disturbance(patch,1.0 / distinterval, gridcell);
 				if (patch.disturbed) {
 					return; // no mortality or establishment this year
 				}
@@ -1567,10 +1566,10 @@ void vegetation_dynamics(Stand& stand,Patch& patch) {
 		}
 
 		// Mortality
-		mortality_guess(stand, patch, stand.get_climate(), fireprob);
+		mortality_guess(stand, patch, stand.get_climate(), fireprob, gridcell);
 
 		// Establishment
-		establishment_guess(stand,patch);
+		establishment_guess(stand,patch, gridcell);
 	}
 
 	patch.age++;

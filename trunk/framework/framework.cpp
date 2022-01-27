@@ -82,7 +82,6 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 		// START OF LOOP THROUGH STANDS
 		Stand& stand = *gc_itr;
 
-        std::cout << "\nStarted stand day with stand.see = " << stand.seed;
 		dailyaccounting_stand(stand);
 
 		stand.firstobj();
@@ -152,7 +151,8 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 				// For each patch ...
 				Patch& patch = stand.getobj();
 				// Establishment, mortality and disturbance by fire
-				vegetation_dynamics(stand, patch);
+                std::cout << "\nEntering veg_dyn with gridcell.seed=" << gridcell.seed;
+				vegetation_dynamics(stand, patch, gridcell);
 				stand.nextobj();
 			}
 		}
@@ -249,6 +249,8 @@ int framework(const CommandLineArguments& args) {
 		while (input_module->getclimate(gridcell)) {
 
 			// START OF LOOP THROUGH SIMULATION DAYS
+            
+            std::cout << "\nEntering simulate_day() with gridcell.seed=" << gridcell.seed;
 
 			simulate_day(gridcell, input_module.get());
 
