@@ -26,6 +26,7 @@
 #include "bvoc.h"
 #include "commonoutput.h"
 #include "soilmethane.h"
+#include "parameters.h"
 
 #include <memory>
 #include <iostream>
@@ -80,6 +81,8 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 
 		// START OF LOOP THROUGH STANDS
 		Stand& stand = *gc_itr;
+
+        std::cout << "\nStarted stand day with stand.see = " << stand.seed;
 		dailyaccounting_stand(stand);
 
 		stand.firstobj();
@@ -217,6 +220,8 @@ int framework(const CommandLineArguments& args) {
 
 		// Create and initialise a new Gridcell object for each locality
 		Gridcell gridcell;
+
+        std::cout << "\nInitiated gridcell with gridcell.seed = " << gridcell.seed;
 
 		// Call input module to obtain latitude and driver data for this grid cell.
 		if (!input_module->getgridcell(gridcell)) {

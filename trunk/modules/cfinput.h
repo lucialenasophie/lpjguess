@@ -38,7 +38,7 @@ public:
 	/// Obtains land management data for one day
 	void getmanagement(Gridcell& gridcell) {management_input.getmanagement(gridcell);}
 
-	static const int NYEAR_SPINUP_DATA=3;
+	static const int NYEAR_SPINUP_DATA=2;
 
 private:
 

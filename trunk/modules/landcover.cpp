@@ -53,11 +53,12 @@ int index(int from, int to, int ncols = nst) {
 /// Initial creation of stands when run_landcover==true based on gridcell stand type area fractions.
 void landcover_init(Gridcell& gridcell, InputModule* input_module) {
 
-    std::cout << "landcover_init() is called.\n";
+    std::cout << "\nlandcover_init() is called.";
+    std::cout << "\nstlist.nobj: " << stlist.nobj;
 
 	if (!run_landcover || restart)
     {
-        std::cout << "!run_landcover";
+        std::cout << "\n!run_landcover";
         return;
     }
 
@@ -81,6 +82,7 @@ void landcover_init(Gridcell& gridcell, InputModule* input_module) {
 
 	stlist.firstobj();
 	while (stlist.isobj) {
+        std::cout << "We seem to have stands";
 		StandType& st = stlist.getobj();
 		Gridcellst& gcst = gridcell.st[st.id];
 
