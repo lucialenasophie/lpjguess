@@ -14,6 +14,7 @@
 #include "config.h"
 #include "landcover.h"
 #include "guessmath.h"
+#include <iostream>
 
 /// Query whether a date is within a period spanned by two dates.
 bool dayinperiod(int day, int start, int end) {
@@ -52,8 +53,14 @@ int index(int from, int to, int ncols = nst) {
 /// Initial creation of stands when run_landcover==true based on gridcell stand type area fractions.
 void landcover_init(Gridcell& gridcell, InputModule* input_module) {
 
+    std::cout << "landcover_init() is called.\n";
+
 	if (!run_landcover || restart)
-		return;
+    {
+        std::cout << "!run_landcover";
+        return;
+    }
+
 
 	// Set CFT-specific members of gridcellpft:
 	for(unsigned int p = 0; p < gridcell.pft.nobj; p++) {
@@ -81,6 +88,7 @@ void landcover_init(Gridcell& gridcell, InputModule* input_module) {
 
 		if(gcst.frac > 0.0) {
 			gridcell.create_stand_lu(st, gcst.frac);
+            std::cout << "Stand created!\n";
 		}
 
 		stlist.nextobj();
