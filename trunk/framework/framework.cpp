@@ -218,8 +218,6 @@ int framework(const CommandLineArguments& args) {
 		// Create and initialise a new Gridcell object for each locality
 		Gridcell gridcell;
 
-        std::cout << "\nGridcell created.";
-
 		// Call input module to obtain latitude and driver data for this grid cell.
 		if (!input_module->getgridcell(gridcell)) {
 			break;
@@ -228,16 +226,11 @@ int framework(const CommandLineArguments& args) {
 		// Initialise certain climate and soil drivers
 		gridcell.climate.initdrivers(gridcell.get_lat());
 
-        std::cout << "\nclimate and soil drivers initiated with climate.distprob = " << gridcell.climate.distprob;
-
 		// Read landcover and cft fraction data from 
 		// data files for the spinup period and create stands
 		landcover_init(gridcell, input_module.get());
 
-        std::cout << "\n Ran landcover_init()";
-
 		if (restart) {
-            std::cout << "Entering restart loop";
 			// Get the whole grid cell from file...
 			deserializer->deserialize_gridcell(gridcell);
 			// ...and jump to the restart year
@@ -247,7 +240,7 @@ int framework(const CommandLineArguments& args) {
             gridcell.seed = randomseed;
 
 		}
-        
+
 
 		// Call input/output to obtain climate, insolation and CO2 for this
 		// day of the simulation. Function getclimate returns false if last year

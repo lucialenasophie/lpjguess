@@ -1559,8 +1559,7 @@ void vegetation_dynamics(Stand& stand,Patch& patch, Gridcell& gridcell) {
 										   date.year <= patch.soil.solvesomcent_endyr;
 
 			if (patch.age && !during_century_solvesom && date.year != stand.clone_year) {
-
-        std::cout << "\nDisturbance probability is: " << gridcell.climate.distprob;
+                
 				disturbance(patch,gridcell.climate.distprob, gridcell);
 				if (patch.disturbed) {
 					return; // no mortality or establishment this year

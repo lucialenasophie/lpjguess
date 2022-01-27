@@ -656,7 +656,6 @@ Stand::Stand(int i, Gridcell* gc, Soiltype& st, landcovertype landcoverX, int np
 
 	// Constructor: initialises reference member of climate and
 	// builds list array of Standpft objects
-    std::cout << "\nlandcover: " << landcover << "landcoverX: " << landcoverX;
 	if (landcover >= NLANDCOVERTYPES) {
 		fail("Unrecognized landcover type\n");
 	}
