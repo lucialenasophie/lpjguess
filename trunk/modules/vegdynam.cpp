@@ -596,7 +596,7 @@ void establishment_guess(Stand& stand,Patch& patch, Gridcell& gridcell) {
 					// Actual number of new saplings drawn from the Poisson distribution
 					// (except cohort mode with stochastic establishment disabled)
 
-					if (ifstochestab && !force_planting || vegmode==INDIVIDUAL) nsapling=randpoisson(est, gridcell.seed);
+					if (ifstochestab && !force_planting || vegmode==INDIVIDUAL) nsapling=randpoisson(est, stand.seed);
 					else nsapling=est;
 
 					if (vegmode==COHORT) {
@@ -1016,7 +1016,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 
 		// Impose fire in this patch with probability 'fireprob'
 
-		if (randfrac(gridcell.seed)<fireprob) {
+		if (randfrac(stand.seed)<fireprob) {
 
 			// Loop through individuals
 
@@ -1059,7 +1059,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 						nindiv_prev=nindiv;
 
 						for (i=0;i<nindiv_prev;i++)
-							if (randfrac(gridcell.seed)>indiv.pft.fireresist) nindiv--;
+							if (randfrac(stand.seed)>indiv.pft.fireresist) nindiv--;
 
 						if (nindiv_prev)
 							frac_survive=(double)nindiv/(double)nindiv_prev;
@@ -1216,7 +1216,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 					nindiv_prev=nindiv;
 
 					for (i=0;i<nindiv_prev;i++)
-						if (randfrac(gridcell.seed)<mort) nindiv--;
+						if (randfrac(stand.seed)<mort) nindiv--;
 
 					if (nindiv_prev)
 						frac_survive=(double)nindiv/(double)nindiv_prev;
@@ -1480,7 +1480,7 @@ void disturbance(Patch& patch, double disturb_prob, Gridcell& gridcell) {
 	// INPUT PARAMETER
 	// disturb_prob = the probability of a disturbance this year
 
-	if (randfrac(gridcell.seed)<disturb_prob) {
+	if (randfrac(patch.stand.seed)<disturb_prob) {
 
 		Vegetation& vegetation = patch.vegetation;
 
