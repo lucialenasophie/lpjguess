@@ -25,6 +25,7 @@
 #include "landcover.h"
 #include "bvoc.h"
 #include "commonoutput.h"
+#include "vegstructoutput.h"
 #include "soilmethane.h"
 
 #include <memory>
