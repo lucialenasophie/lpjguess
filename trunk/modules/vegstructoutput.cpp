@@ -28,7 +28,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct, "Lon Lat Year SID PID VID Pft Lifeform LeafType PhenType Pathway Age LAI ShadeType N DBH Height Crownarea\n");
+                fprintf(out_vegstruct, "Lon Lat Year SID PID VID Pft Lifeform LeafType PhenType Pathway Age LAI cmass_veg ShadeType N DBH Height Crownarea\n");
             }
         }
     }
@@ -64,6 +64,7 @@ namespace GuessOutput {
                             fprintf(out_vegstruct, " %i ",    indiv.pft.pathway);
                             fprintf(out_vegstruct, " %4.0f ", indiv.age);
                             fprintf(out_vegstruct, " %6.2f ", indiv.lai);
+                            fprintf(out_vegstruct, " %6.2f ", indiv.cmass_veg);
                             if (indiv.pft.lifeform == TREE) {
                                 fprintf(out_vegstruct, " %4.1f ", indiv.pft.alphar);
                                 fprintf(out_vegstruct, " %4.0f ", indiv.densindiv * patcharea);

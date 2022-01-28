@@ -6,7 +6,7 @@
 # /home/lucia/lpjguess/code/trunk/build/guess
 # as a parallel job using SLURM on Simba2. Based on Aurora.tmpl.
 #
-# Created automatically on Fr 28. Jan 12:10:50 CET 2022
+# Created automatically on Fr 28. Jan 12:32:33 CET 2022
 # 
 # Usage: 
 #
