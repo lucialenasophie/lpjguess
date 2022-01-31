@@ -36,5 +36,27 @@ namespace GuessOutput {
         xtring file_vegstruct;
         FILE *out_vegstruct;
     };
+    class VegstructOutputPatch : public OutputModule {
+    public:
+        VegstructOutputPatch();
+        ~VegstructOutputPatch();
+        // implemented functions inherited from OutputModule
+        // (see documentation in OutputModule)
+        void init();
+        void outannual(Gridcell& gridcell);
+        void outdaily(Gridcell& gridcell);
+
+        void openlocalfiles(Gridcell& gridcell) {};
+
+        void closelocalfiles(Gridcell& gridcell) {};
+
+    private:
+
+        // Defines all output tables
+        void define_output_tables();
+
+        xtring file_vegstruct_patch;
+        FILE *out_vegstruct_patch;
+    };
 }
 #endif

@@ -14,17 +14,19 @@
 
 namespace GuessOutput {
     REGISTER_OUTPUT_MODULE("vegstruct", VegstructOutput)
+
     VegstructOutput::VegstructOutput() {
         declare_parameter("file_vegstruct", &file_vegstruct, 300, "Detailed vegetation structure");
     }
+
     VegstructOutput::~VegstructOutput() {
     }
+
     void VegstructOutput::init() {
         if (file_vegstruct != "") {
             std::string full_path =  (char*) file_vegstruct;
             std::string head_path{(char*) path_vegstruct};
             full_path = head_path + full_path;
-            std::cout  << "\nFull path: " << full_path << "\n";
             out_vegstruct = fopen(full_path.c_str(), "w");
             if (out_vegstruct == NULL) {
                 fail("Could not open %s for output\n"                         \
@@ -36,9 +38,11 @@ namespace GuessOutput {
             }
         }
     }
+
     void VegstructOutput::outdaily(Gridcell& gridcell) {
         return;
     }
+
     void VegstructOutput::outannual(Gridcell& gridcell) {
         if (file_vegstruct == "")
             return;
@@ -92,4 +96,59 @@ namespace GuessOutput {
             }
         }
     } // END of void VegStructOutput::outannual
+
+
+    REGISTER_OUTPUT_MODULE("vegstruct_patch", VegstructOutputPatch)
+
+    VegstructOutputPatch::VegstructOutputPatch() {
+        ("file_vegstruct_path", &file_vegstruct_patch, 300, "Detailed vegetation structure on patch level");
+    }
+    VegstructOutputPatch::~VegstructOutputPatch() {
+    }
+
+    void VegstructOutputPatch::init() {
+        if (file_vegstruct_patch != "") {
+            std::string full_path =  (char*) file_vegstruct_patch;
+            std::string head_path{(char*) path_vegstruct};
+            full_path = head_path + full_path;
+            out_vegstruct_patch = fopen(full_path.c_str(), "w");
+            if (out_vegstruct_patch == NULL) {
+                fail("Could not open %s for output\n"                         \
+             "Close the file if it is open in another application",
+                     full_path.c_str());
+            } else {
+                dprintf("dummy\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID  Pft Lifeform LeafType PhenType Pathway Age LAI ccont ShadeType N DBH Height Crownarea\n");
+            }
+        }
+    }
+
+    void VegstructOutputPatch::outdaily(Gridcell& gridcell) {
+        return;
+    }
+
+    void VegstructOutputPatch::outannual(Gridcell &gridcell) {
+        if (file_vegstruct_patch == "")
+            return;
+        if (date.year >= nyear_spinup-50) {
+            double lon = gridcell.get_lon();
+            double lat = gridcell.get_lat();
+            Gridcell::iterator gc_itr = gridcell.begin();
+            while (gc_itr != gridcell.end()) {
+                Stand& stand = *gc_itr;
+                stand.firstobj();
+                while (stand.isobj) {
+                    Patch& patch = stand.getobj();
+                    fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
+                    fprintf(out_vegstruct_patch, " %i ",    stand.id);
+                    fprintf(out_vegstruct_patch, " %i ",    patch.id);
+                    fprintf(out_vegstruct_patch, " %6.2f ", patch.ccont());
+                    stand.nextobj();
+                }
+                ++gc_itr;
+            }
+        }
+
+    }
+
 } // END of namespace VegStructOutput
