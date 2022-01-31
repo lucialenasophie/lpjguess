@@ -10,6 +10,7 @@
 #include "vegstructoutput.h"
 #include "parameters.h"
 #include "guess.h"
+#include <iostream>
 
 namespace GuessOutput {
     REGISTER_OUTPUT_MODULE("vegstruct", VegstructOutput)
@@ -20,7 +21,10 @@ namespace GuessOutput {
     }
     void VegstructOutput::init() {
         if (file_vegstruct != "") {
-            std::string full_path = (char*) file_vegstruct;
+            std::string full_path =  (char*) file_vegstruct;
+            std::string head_path{(char*) path_vegstruct};
+            full_path = head_path + full_path;
+            std::cout  << "\nFull path: " << full_path << "\n";
             out_vegstruct = fopen(full_path.c_str(), "w");
             if (out_vegstruct == NULL) {
                 fail("Could not open %s for output\n"                         \

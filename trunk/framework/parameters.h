@@ -82,6 +82,9 @@ typedef enum {ROOTDIST_FIXED, ROOTDIST_JACKSON} rootdisttype;
 ///////////////////////////////////////////////////////////////////////////////////////
 // Global instruction file parameters
 
+///Path for vegstruct
+extern xtring path_vegstruct;
+
 /// Title for this run
 extern xtring title;
 
