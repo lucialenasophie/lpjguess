@@ -101,7 +101,7 @@ namespace GuessOutput {
     REGISTER_OUTPUT_MODULE("vegstruct_patch", VegstructOutputPatch)
 
     VegstructOutputPatch::VegstructOutputPatch() {
-        ("file_vegstruct_path", &file_vegstruct_patch, 300, "Detailed vegetation structure on patch level");
+        declare_parameter("file_vegstruct_patch", &file_vegstruct_patch, 300, "Detailed vegetation structure on patch level");
     }
     VegstructOutputPatch::~VegstructOutputPatch() {
     }
@@ -118,7 +118,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID  Pft Lifeform LeafType PhenType Pathway Age LAI ccont ShadeType N DBH Height Crownarea\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID  ccont_total \n");
             }
         }
     }
@@ -133,20 +133,22 @@ namespace GuessOutput {
         if (date.year >= nyear_spinup-50) {
             double lon = gridcell.get_lon();
             double lat = gridcell.get_lat();
-            Gridcell::iterator gc_itr = gridcell.begin();
-            while (gc_itr != gridcell.end()) {
-                Stand& stand = *gc_itr;
-                stand.firstobj();
-                while (stand.isobj) {
-                    Patch& patch = stand.getobj();
-                    fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
-                    fprintf(out_vegstruct_patch, " %i ",    stand.id);
-                    fprintf(out_vegstruct_patch, " %i ",    patch.id);
-                    fprintf(out_vegstruct_patch, " %6.2f ", patch.ccont());
-                    stand.nextobj();
+                Gridcell::iterator gc_itr = gridcell.begin();
+                while (gc_itr != gridcell.end()) {
+                    Stand& stand = *gc_itr;
+                    stand.firstobj();
+                    while (stand.isobj) {
+                        Patch& patch = stand.getobj();
+                        fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
+                        fprintf(out_vegstruct_patch, " %i ",    stand.id);
+                        fprintf(out_vegstruct_patch, " %i ",    patch.id);
+                        fprintf(out_vegstruct_patch, " %6.2f ", patch.ccont());
+                        stand.nextobj();
+                    }
+                    ++gc_itr;
                 }
-                ++gc_itr;
-            }
+
+
         }
 
     }
