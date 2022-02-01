@@ -118,7 +118,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID  ccont_total \n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID VID PFT ccont_total ccont_indiv ccont_patch_before ccont_path_after \n");
             }
         }
     }
@@ -133,23 +133,53 @@ namespace GuessOutput {
         if (date.year >= nyear_spinup-50) {
             double lon = gridcell.get_lon();
             double lat = gridcell.get_lat();
+            // *** Loop through PFTs (per cohort) ***
+
+            pftlist.firstobj();
+            while (pftlist.isobj) {
+
+                Pft &pft = pftlist.getobj();
+                Gridcellpft &gridcellpft = gridcell.pft[pft.id];
+
                 Gridcell::iterator gc_itr = gridcell.begin();
                 while (gc_itr != gridcell.end()) {
-                    Stand& stand = *gc_itr;
+                    Stand &stand = *gc_itr;
                     stand.firstobj();
                     while (stand.isobj) {
-                        Patch& patch = stand.getobj();
-                        fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
-                        fprintf(out_vegstruct_patch, " %i ",    stand.id);
-                        fprintf(out_vegstruct_patch, " %i ",    patch.id);
-                        fprintf(out_vegstruct_patch, " %6.2f ", patch.ccont());
-                        fprintf(out_vegstruct_patch, "\n");
+                        Patch &patch = stand.getobj();
+                        Patchpft& patchpft = patch.pft[pft.id];
+                        double patchpftccont{0};
+                        //std::cout << "\ninitialized patchpftcont for pft=" << (char*) patchpft.pft.name << " and ";
+                        //std::cout << " patch=" << patch.id;
+                        Vegetation& vegetation = patch.vegetation;
+                        vegetation.firstobj();
+                        while (vegetation.isobj) {
+                            Individual& indiv=vegetation.getobj();
+                            // guess2008 - alive check added
+                            if (indiv.id != -1 && indiv.alive) {
+                                fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year());
+                                fprintf(out_vegstruct_patch, " %i ", stand.id);
+                                fprintf(out_vegstruct_patch, " %i ", patch.id);
+                                fprintf(out_vegstruct_patch, " %i ", indiv.id);
+                                fprintf(out_vegstruct_patch, " %10s ", (char*) patchpft.pft.name);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patch.ccont());
+                                fprintf(out_vegstruct_patch, " %6.2f ", indiv.ccont());
+                                fprintf(out_vegstruct_patch, "%6.2f", patchpftccont);
+                                patchpftccont += indiv.ccont();
+                                fprintf(out_vegstruct_patch, "%6.2f", patchpftccont);
+                                fprintf(out_vegstruct_patch, "\n");
+
+                            }
+                            vegetation.nextobj();
+                        }
+
+
                         stand.nextobj();
                     }
                     ++gc_itr;
                 }
-
-
+            pftlist.nextobj();
+            }
         }
 
     }
