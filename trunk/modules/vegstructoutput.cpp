@@ -143,6 +143,7 @@ namespace GuessOutput {
                         fprintf(out_vegstruct_patch, " %i ",    stand.id);
                         fprintf(out_vegstruct_patch, " %i ",    patch.id);
                         fprintf(out_vegstruct_patch, " %6.2f ", patch.ccont());
+                        fprintf(out_vegstruct_patch, "\n");
                         stand.nextobj();
                     }
                     ++gc_itr;
