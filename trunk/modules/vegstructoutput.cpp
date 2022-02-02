@@ -118,7 +118,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID VID PFT ccont_total ccont_indiv ccont_patch_before ccont_path_after \n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass\n");
             }
         }
     }
@@ -133,55 +133,69 @@ namespace GuessOutput {
         if (date.year >= nyear_spinup-50) {
             double lon = gridcell.get_lon();
             double lat = gridcell.get_lat();
-            // *** Loop through PFTs (per cohort) ***
+
+            double patchpft_cmass{0};
+
+            // *** Loop through PFTs ***
 
             pftlist.firstobj();
             while (pftlist.isobj) {
 
-                Pft &pft = pftlist.getobj();
-                Gridcellpft &gridcellpft = gridcell.pft[pft.id];
+                Pft& pft=pftlist.getobj();
+                Gridcellpft& gridcellpft=gridcell.pft[pft.id];
 
+                // Loop through Stands
                 Gridcell::iterator gc_itr = gridcell.begin();
+
                 while (gc_itr != gridcell.end()) {
-                    Stand &stand = *gc_itr;
-                    stand.firstobj();
-                    while (stand.isobj) {
-                        Patch &patch = stand.getobj();
-                        Patchpft& patchpft = patch.pft[pft.id];
-                        double patchpftccont{0};
-                        //std::cout << "\ninitialized patchpftcont for pft=" << (char*) patchpft.pft.name << " and ";
-                        //std::cout << " patch=" << patch.id;
-                        Vegetation& vegetation = patch.vegetation;
-                        vegetation.firstobj();
-                        while (vegetation.isobj) {
-                            Individual& indiv=vegetation.getobj();
-                            // guess2008 - alive check added
-                            if (indiv.id != -1 && indiv.alive) {
-                                fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year());
-                                fprintf(out_vegstruct_patch, " %i ", stand.id);
-                                fprintf(out_vegstruct_patch, " %i ", patch.id);
-                                fprintf(out_vegstruct_patch, " %i ", indiv.id);
-                                fprintf(out_vegstruct_patch, " %10s ", (char*) patchpft.pft.name);
-                                fprintf(out_vegstruct_patch, " %6.2f ", patch.ccont());
-                                fprintf(out_vegstruct_patch, " %6.2f ", indiv.ccont());
-                                fprintf(out_vegstruct_patch, "%6.2f", patchpftccont);
-                                patchpftccont += indiv.ccont();
-                                fprintf(out_vegstruct_patch, "%6.2f", patchpftccont);
-                                fprintf(out_vegstruct_patch, "\n");
+                    Stand& stand = *gc_itr;
 
-                            }
-                            vegetation.nextobj();
-                        }
+                    Standpft& standpft=stand.pft[pft.id];
+
+                    // Loop through Stands
+                    if(standpft.active) {
+                        stand.firstobj();
+
+                        // Loop through Patches
+                        while (stand.isobj) {
+
+                            patchpft_cmass = 0.0;
+
+                            Patch& patch = stand.getobj();
+                            Patchpft& patchpft = patch.pft[pft.id];
+                            Vegetation& vegetation = patch.vegetation;
+
+                            //Loop through cohorts
+                            vegetation.firstobj();
+                            while (vegetation.isobj) {
+                                Individual& indiv=vegetation.getobj();
+
+                                if (indiv.id!=-1 && indiv.alive) { // check alive?
+
+                                    if (indiv.pft.id==pft.id) {
+                                        patchpft_cmass += indiv.ccont();
+                                    }
+
+                                } // end check alive?
+                                vegetation.nextobj();
+                            } // end of cohort loop
 
 
-                        stand.nextobj();
-                    }
+                            //Write patch level metrics to file
+                            fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
+                            fprintf(out_vegstruct_patch, " %i ",    stand.id);
+                            fprintf(out_vegstruct_patch, " %i ",    patch.id);
+                            fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
+                            fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
+                            fprintf(out_vegstruct_patch, "\n");
+                            stand.nextobj();
+                        } // end of patch loop
+                    }//if(active)
                     ++gc_itr;
-                }
-            pftlist.nextobj();
-            }
+                }//End of loop through stands
+                pftlist.nextobj();
+            } // *** End of PFT loop ***
         }
-
     }
 
 } // END of namespace VegStructOutput
