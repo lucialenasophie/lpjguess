@@ -118,7 +118,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens\n");
             }
         }
     }
@@ -134,7 +134,11 @@ namespace GuessOutput {
             double lon = gridcell.get_lon();
             double lat = gridcell.get_lat();
 
+            double m{0}; //month iterator
+
             double patchpft_cmass{0};
+            double patchpft_lai{0};
+            double patchpft_dens{0};
 
             // *** Loop through PFTs ***
 
@@ -160,6 +164,8 @@ namespace GuessOutput {
                         while (stand.isobj) {
 
                             patchpft_cmass = 0.0;
+                            patchpft_dens = 0.0;
+                            patchpft_lai = 0.0;
 
                             Patch& patch = stand.getobj();
                             Patchpft& patchpft = patch.pft[pft.id];
@@ -174,8 +180,11 @@ namespace GuessOutput {
 
                                     if (indiv.pft.id==pft.id) {
                                         patchpft_cmass += indiv.ccont();
+                                        patchpft_lai += indiv.lai;
+                                        if (pft.lifeform==TREE) {
+                                            patchpft_dens += indiv.densindiv;
+                                        }
                                     }
-
                                 } // end check alive?
                                 vegetation.nextobj();
                             } // end of cohort loop
@@ -187,6 +196,8 @@ namespace GuessOutput {
                             fprintf(out_vegstruct_patch, " %i ",    patch.id);
                             fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
                             fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
+                            fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
+                            fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
                             fprintf(out_vegstruct_patch, "\n");
                             stand.nextobj();
                         } // end of patch loop
