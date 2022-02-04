@@ -93,6 +93,9 @@ extern xtring path_vegstruct;
 
 
 
+///Path for vegstruct
+extern xtring path_vegstruct;
+
 /// Title for this run
 extern xtring title;
 
