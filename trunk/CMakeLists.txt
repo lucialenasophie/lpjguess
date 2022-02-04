@@ -123,7 +123,7 @@ target_link_libraries(${guess_command_name} ${LIBS})
 
 if (WIN32)
   # Create guess.dll (used with the graphical Windows shell)
-  add_library(guess SHARED ${guess_sources} windows_version/dllmain.cpp)
+  add_library(guess SHARED ${guess_sources} windows_version/dllmain.cpp test_ccont.cpp)
 
   # Specify libraries to link to the dll
   target_link_libraries(guess ${LIBS})

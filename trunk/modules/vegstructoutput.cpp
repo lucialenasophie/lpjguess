@@ -10,17 +10,23 @@
 #include "vegstructoutput.h"
 #include "parameters.h"
 #include "guess.h"
+#include <iostream>
 
 namespace GuessOutput {
     REGISTER_OUTPUT_MODULE("vegstruct", VegstructOutput)
+
     VegstructOutput::VegstructOutput() {
         declare_parameter("file_vegstruct", &file_vegstruct, 300, "Detailed vegetation structure");
     }
+
     VegstructOutput::~VegstructOutput() {
     }
+
     void VegstructOutput::init() {
         if (file_vegstruct != "") {
-            std::string full_path = (char*) file_vegstruct;
+            std::string full_path =  (char*) file_vegstruct;
+            std::string head_path{(char*) path_vegstruct};
+            full_path = head_path + full_path;
             out_vegstruct = fopen(full_path.c_str(), "w");
             if (out_vegstruct == NULL) {
                 fail("Could not open %s for output\n"                         \
@@ -32,9 +38,11 @@ namespace GuessOutput {
             }
         }
     }
+
     void VegstructOutput::outdaily(Gridcell& gridcell) {
         return;
     }
+
     void VegstructOutput::outannual(Gridcell& gridcell) {
         if (file_vegstruct == "")
             return;
@@ -88,4 +96,135 @@ namespace GuessOutput {
             }
         }
     } // END of void VegStructOutput::outannual
+
+
+    REGISTER_OUTPUT_MODULE("vegstruct_patch", VegstructOutputPatch)
+
+    VegstructOutputPatch::VegstructOutputPatch() {
+        declare_parameter("file_vegstruct_patch", &file_vegstruct_patch, 300, "Detailed vegetation structure on patch level");
+    }
+    VegstructOutputPatch::~VegstructOutputPatch() {
+    }
+
+    void VegstructOutputPatch::init() {
+        if (file_vegstruct_patch != "") {
+            std::string full_path =  (char*) file_vegstruct_patch;
+            std::string head_path{(char*) path_vegstruct};
+            full_path = head_path + full_path;
+            out_vegstruct_patch = fopen(full_path.c_str(), "w");
+            if (out_vegstruct_patch == NULL) {
+                fail("Could not open %s for output\n"                         \
+             "Close the file if it is open in another application",
+                     full_path.c_str());
+            } else {
+                dprintf("dummy\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai lai1 lai2 lai3 lai4 lai5 lai6 lai7 lai8 lai9 lai10 lai11 lai12 dens\n");
+            }
+        }
+    }
+
+    void VegstructOutputPatch::outdaily(Gridcell& gridcell) {
+        return;
+    }
+
+    void VegstructOutputPatch::outannual(Gridcell &gridcell) {
+        if (file_vegstruct_patch == "")
+            return;
+        if (date.year >= nyear_spinup-50) {
+            double lon = gridcell.get_lon();
+            double lat = gridcell.get_lat();
+
+            int m{0}; //month iterator
+            double mlai[12];
+
+            // guess2008 - reset monthly and annual sums across patches each year
+            for (m = 0; m < 12; m++) {
+                mlai[m] = 0.0;
+            }
+
+            double patchpft_cmass{0};
+            double patchpft_lai{0};
+            double patchpft_dens{0};
+
+            // *** Loop through PFTs ***
+
+            pftlist.firstobj();
+            while (pftlist.isobj) {
+
+                Pft& pft=pftlist.getobj();
+                Gridcellpft& gridcellpft=gridcell.pft[pft.id];
+
+                // Loop through gridcells (?)
+                Gridcell::iterator gc_itr = gridcell.begin();
+
+                while (gc_itr != gridcell.end()) {
+                    Stand& stand = *gc_itr;
+
+                    Standpft& standpft=stand.pft[pft.id];
+
+                    // Loop through Stands
+                    if(standpft.active) {
+                        stand.firstobj();
+
+                        // Loop through Patches
+                        while (stand.isobj) {
+
+                            patchpft_cmass = 0.0;
+                            patchpft_dens = 0.0;
+                            patchpft_lai = 0.0;
+
+                            for (m = 0; m < 12; m++) {
+                                mlai[m] = 0.0;
+                            }
+
+                            Patch& patch = stand.getobj();
+                            Patchpft& patchpft = patch.pft[pft.id];
+                            Vegetation& vegetation = patch.vegetation;
+
+                            //Write patch level metrics to file that do not need summing over cohorts
+                            fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
+                            fprintf(out_vegstruct_patch, " %i ",    stand.id);
+                            fprintf(out_vegstruct_patch, " %i ",    patch.id);
+                            fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
+
+                            //Loop through cohorts
+                            vegetation.firstobj();
+                            while (vegetation.isobj) {
+                                Individual& indiv=vegetation.getobj();
+
+                                if (indiv.id!=-1 && indiv.alive) { // check alive?
+
+                                    if (indiv.pft.id==pft.id) {
+                                        patchpft_cmass += indiv.ccont();
+                                        patchpft_lai += indiv.lai;
+                                        for (m=0;m<12;m++) {
+                                            mlai[m] += indiv.mlai[m];
+                                        }
+                                        if (pft.lifeform==TREE) {
+                                            patchpft_dens += indiv.densindiv;
+                                        }
+                                    }
+                                } // end check alive?
+                                vegetation.nextobj();
+                            } // end of cohort loop
+
+
+                            //Write patch level metrics to file that need summing over indivs
+                            fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
+                            fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
+                            for (m=0;m<12;m++) {
+                                fprintf(out_vegstruct_patch, " %6.2f", mlai[m]);
+                            }
+                            fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
+                            fprintf(out_vegstruct_patch, "\n");
+                            stand.nextobj();
+                        } // end of patch loop
+                    }//if(active)
+                    ++gc_itr;
+                }//End of loop through stands
+                pftlist.nextobj();
+            } // *** End of PFT loop ***
+        }
+    }
+
 } // END of namespace VegStructOutput
