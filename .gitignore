@@ -12,4 +12,6 @@ data_unused
 *.out
 branches
 tags
+.idea
+*/build/*
 **/test_ccont.cpp
