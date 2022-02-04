@@ -20,7 +20,7 @@
 // Definitions of parameters defined globally in parameters.h,
 // for documentation, see parameters.h
 
-xtring path_vegstruct;
+xtring outputdirectory;
 xtring title;
 vegmodetype vegmode;
 firemodeltype firemodel;
@@ -426,7 +426,7 @@ void plib_declarations(int id,xtring setname) {
 	switch (id) {
 
 	case BLOCK_GLOBAL:
-        declareitem("path_vegstruct", &path_vegstruct, 80, CB_NONE, "Path for vegstruct");
+        declareitem("outputdirectory", &outputdirectory, 80, CB_NONE, "Path for vegstruct");
 		declareitem("title",&title,80,CB_NONE,"Title for run");
 		declareitem("nyear_spinup",&nyear_spinup,1,10000,1,CB_NONE,"Number of simulation years to spinup for");
 		declareitem("vegmode",&strparam,16,CB_VEGMODE,

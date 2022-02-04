@@ -25,8 +25,7 @@ namespace GuessOutput {
     void VegstructOutput::init() {
         if (file_vegstruct != "") {
             std::string full_path =  (char*) file_vegstruct;
-            std::string head_path{(char*) path_vegstruct};
-            full_path = head_path + full_path;
+            full_path = (char*) outputdirectory + full_path;
             out_vegstruct = fopen(full_path.c_str(), "w");
             if (out_vegstruct == NULL) {
                 fail("Could not open %s for output\n"                         \
@@ -109,8 +108,7 @@ namespace GuessOutput {
     void VegstructOutputPatch::init() {
         if (file_vegstruct_patch != "") {
             std::string full_path =  (char*) file_vegstruct_patch;
-            std::string head_path{(char*) path_vegstruct};
-            full_path = head_path + full_path;
+            full_path = (char*) outputdirectory + full_path;
             out_vegstruct_patch = fopen(full_path.c_str(), "w");
             if (out_vegstruct_patch == NULL) {
                 fail("Could not open %s for output\n"                         \
