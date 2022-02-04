@@ -154,7 +154,7 @@ namespace GuessOutput {
                 Pft& pft=pftlist.getobj();
                 Gridcellpft& gridcellpft=gridcell.pft[pft.id];
 
-                // Loop through Stands
+                // Loop through gridcells (?)
                 Gridcell::iterator gc_itr = gridcell.begin();
 
                 while (gc_itr != gridcell.end()) {
@@ -173,11 +173,15 @@ namespace GuessOutput {
                             patchpft_dens = 0.0;
                             patchpft_lai = 0.0;
 
+                            for (m = 0; m < 12; m++) {
+                                mlai[m] = 0.0;
+                            }
+
                             Patch& patch = stand.getobj();
                             Patchpft& patchpft = patch.pft[pft.id];
                             Vegetation& vegetation = patch.vegetation;
 
-                            //Write patch level metrics to file
+                            //Write patch level metrics to file that do not need summing over cohorts
                             fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
                             fprintf(out_vegstruct_patch, " %i ",    stand.id);
                             fprintf(out_vegstruct_patch, " %i ",    patch.id);
