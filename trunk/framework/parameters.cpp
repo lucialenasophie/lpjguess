@@ -19,7 +19,7 @@
 
 // Definitions of parameters defined globally in parameters.h,
 // for documentation, see parameters.h
-
+int randomseed;
 xtring outputdirectory;
 xtring title;
 vegmodetype vegmode;
@@ -426,7 +426,11 @@ void plib_declarations(int id,xtring setname) {
 	switch (id) {
 
 	case BLOCK_GLOBAL:
-        declareitem("outputdirectory", &outputdirectory, 80, CB_NONE, "Path for vegstruct");
+///custom parameters
+        declareitem("randomseed", &randomseed, 0.00, 100000000.00 , 1, CB_NONE,
+                    "Seed for random number generation");
+            declareitem("outputdirectory", &outputdirectory, 80, CB_NONE, "Path for vegstruct");
+///
 		declareitem("title",&title,80,CB_NONE,"Title for run");
 		declareitem("nyear_spinup",&nyear_spinup,1,10000,1,CB_NONE,"Number of simulation years to spinup for");
 		declareitem("vegmode",&strparam,16,CB_VEGMODE,
