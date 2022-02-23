@@ -179,12 +179,6 @@ namespace GuessOutput {
                             Patchpft& patchpft = patch.pft[pft.id];
                             Vegetation& vegetation = patch.vegetation;
 
-                            //Write patch level metrics to file that do not need summing over cohorts
-                            fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
-                            fprintf(out_vegstruct_patch, " %i ",    stand.id);
-                            fprintf(out_vegstruct_patch, " %i ",    patch.id);
-                            fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
-
                             //Loop through cohorts
                             vegetation.firstobj();
                             while (vegetation.isobj) {
@@ -207,14 +201,22 @@ namespace GuessOutput {
                             } // end of cohort loop
 
 
-                            //Write patch level metrics to file that need summing over indivs
-                            fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
-                            fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
-                            for (m=0;m<12;m++) {
-                                fprintf(out_vegstruct_patch, " %6.2f", mlai[m]);
+                            // Make sure to only write output if we have individuals of that PFT present.
+                            if (patchpft_cmass > 0)
+                            {
+                                fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
+                                fprintf(out_vegstruct_patch, " %i ",    stand.id);
+                                fprintf(out_vegstruct_patch, " %i ",    patch.id);
+                                fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
+                                fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
+                                for (m=0;m<12;m++) {
+                                    fprintf(out_vegstruct_patch, " %6.2f", mlai[m]);
+                                }
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
+                                fprintf(out_vegstruct_patch, "\n");
                             }
-                            fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
-                            fprintf(out_vegstruct_patch, "\n");
+
                             stand.nextobj();
                         } // end of patch loop
                     }//if(active)
