@@ -13,13 +13,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46837882-7b1e-4b32-8178-190b7fc95371" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../_BACKUP_17441.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../_BASE_17441.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../_LOCAL_17441.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../_REMOTE_17441.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/guess" beforeDir="false" afterPath="$PROJECT_DIR$/build/guess" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build/submit.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build/submit.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vegstruc-output.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <list id="f386ab59-e5bf-4359-94b3-8c8493edc154" name="vecstruct_patch" comment="implemented patch provided by CZ/BM/Joerg Steinkamp" />
     <option name="SHOW_DIALOG" value="false" />
@@ -71,9 +65,9 @@
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
   </component>
@@ -103,6 +97,7 @@
       <workItem from="1643961506797" duration="8078000" />
       <workItem from="1644513702677" duration="628000" />
       <workItem from="1644570074452" duration="2238000" />
+      <workItem from="1645793364875" duration="3270000" />
     </task>
     <servers />
   </component>
