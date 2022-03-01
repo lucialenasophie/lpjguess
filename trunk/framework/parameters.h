@@ -100,6 +100,7 @@ extern xtring path_vegstruct;
 extern xtring outputdirectory;
 
 
+
 /// Title for this run
 extern xtring title;
 
@@ -260,6 +261,9 @@ extern int nyear_dyn_phu;
 
 /// number of spinup years
 extern int nyear_spinup;
+
+/// year to start writing output
+extern int nyear_write;
 
 /// Whether to use sowingdates from input file
 extern bool readsowingdates;

@@ -100,6 +100,7 @@ bool ifdyn_phu_limit;
 bool iftransfer_to_new_stand;
 int nyear_dyn_phu;
 int nyear_spinup;
+int nyear_write = nyear_spinup;
 bool textured_soil;
 bool disturb_pasture;
 bool grassforcrop;
@@ -433,6 +434,7 @@ void plib_declarations(int id,xtring setname) {
 ///
 		declareitem("title",&title,80,CB_NONE,"Title for run");
 		declareitem("nyear_spinup",&nyear_spinup,1,10000,1,CB_NONE,"Number of simulation years to spinup for");
+            declareitem("nyear_write",&nyear_write,1,10000,1,CB_NONE,"Year to start writing output");
 		declareitem("vegmode",&strparam,16,CB_VEGMODE,
 			"Vegetation mode (\"INDIVIDUAL\", \"COHORT\", \"POPULATION\")");
 		declareitem("ifbgestab",&ifbgestab,1,CB_NONE,
