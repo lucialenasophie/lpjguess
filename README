@@ -1,0 +1,6 @@
+Addition to LPJ-GUESS 4.0
+
+This adds an external parameter called "randomseed" which defines the seed for
+random number generation. In default LPJ-GUESS is is hardcoded to 12345678 twice:
+inside the gridcell member function and inside the stand member function.
+In both this instances seed is to initiated with "randomseed" instead.
