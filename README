@@ -1,0 +1,12 @@
+This is an addition to LPJ-GUESS 4.0
+
+This defines a new input param "file_dist" that defines a disturbance probability
+per year. Implementation followed that of file_co2, hence error messages will resemble
+those of co2. 
+
+Note: in Vanilla a disturbance intervall is given, that is transoformed
+to a disturbance probability 1/intervall internally. Here disturbance probability
+is given directly. The reason for this that is allows to switch disturbance off
+in certain time intervall by inputing porbability 0. For intervall is is much less
+convenient, one would need to input interval -> inf.
+
