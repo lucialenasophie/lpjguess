@@ -1,0 +1,7 @@
+An udate to LPJ-GUESS 4.0. 
+
+This adds an external parametered called nyear_write that controls which
+year the models starts writing output. Default is set to nyear_spinup,
+this is also what happens in vanilla version.
+
+nyear_spinup needs to be larger than 0.
