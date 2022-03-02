@@ -1,0 +1,7 @@
+This is the master branch of LPJ development for Lucia S. Layritz. 
+
+Has currently merged
+seed_as_parameter: takes random seed as external parameter instead of hardcoded constant
+nyear_write: defines an external variable to control the year to start writing output
+vegstruct_output: Create output modules for subgridcell output (individuals or patches)
+dist_as_inout: inputs disturbance probability as driving data variable in time instead of constant
