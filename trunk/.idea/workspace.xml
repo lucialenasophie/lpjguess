@@ -12,9 +12,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46837882-7b1e-4b32-8178-190b7fc95371" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="46837882-7b1e-4b32-8178-190b7fc95371" name="Changes" comment="" />
     <list id="f386ab59-e5bf-4359-94b3-8c8493edc154" name="vecstruct_patch" comment="implemented patch provided by CZ/BM/Joerg Steinkamp" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,9 +63,9 @@
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
       </method>
     </configuration>
   </component>
