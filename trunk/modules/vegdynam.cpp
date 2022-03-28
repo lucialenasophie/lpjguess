@@ -31,6 +31,7 @@
 #include "vegdynam.h"
 #include "growth.h"
 #include "driver.h"
+#include <iostream>
 
 
 /// Upper LAI limit for wetland species. No limit: 0 //TODO remove this after daily allocation.
@@ -1498,7 +1499,10 @@ void disturbance(Patch& patch, double disturb_prob) {
 		patch.age = 0;
 	}
 
-	else patch.disturbed = false;
+	else {
+        patch.disturbed = false;
+    }
+
 }
 
 

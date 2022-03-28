@@ -116,7 +116,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai lai1 lai2 lai3 lai4 lai5 lai6 lai7 lai8 lai9 lai10 lai11 lai12 dens\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai lai1 lai2 lai3 lai4 lai5 lai6 lai7 lai8 lai9 lai10 lai11 lai12 dens dhist\n");
             }
         }
     }
@@ -214,6 +214,21 @@ namespace GuessOutput {
                                     fprintf(out_vegstruct_patch, " %6.2f", mlai[m]);
                                 }
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
+                                fprintf(out_vegstruct_patch, " %i", patch.disturbed);
+                                fprintf(out_vegstruct_patch, "\n");
+                            }
+                            else if (patch.disturbed){ //Make sure disturbance years are printed out even tho biomass is zero
+                                fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
+                                fprintf(out_vegstruct_patch, " %i ",    stand.id);
+                                fprintf(out_vegstruct_patch, " %i ",    patch.id);
+                                fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
+                                fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
+                                for (m=0;m<12;m++) {
+                                    fprintf(out_vegstruct_patch, " %6.2f", mlai[m]);
+                                }
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
+                                fprintf(out_vegstruct_patch, " %i", patch.disturbed);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
 
