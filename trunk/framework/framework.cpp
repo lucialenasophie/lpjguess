@@ -143,7 +143,8 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 		crop_rotation(stand);
 
 		if (date.islastday && date.islastmonth) {
-			// LAST DAY OF YEAR
+
+            // LAST DAY OF YEAR
 			stand.firstobj();
 			while (stand.isobj) {
 

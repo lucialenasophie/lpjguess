@@ -8,6 +8,6 @@ data_unused
 *.out
 branches
 tags
-.idea
+trunk/.idea/workspace.xml
 */build/*
 **/test_ccont.cpp

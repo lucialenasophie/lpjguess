@@ -1498,7 +1498,10 @@ void disturbance(Patch& patch, double disturb_prob, Gridcell& gridcell) {
 		patch.age = 0;
 	}
 
-	else patch.disturbed = false;
+	else {
+        patch.disturbed = false;
+    }
+
 }
 
 
