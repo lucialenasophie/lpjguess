@@ -1,0 +1,596 @@
+Index: framework/guess.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/framework/guess.cpp b/framework/guess.cpp
+--- a/framework/guess.cpp	(revision 10346)
++++ b/framework/guess.cpp	(date 1643184561444)
+@@ -1717,7 +1717,7 @@
+ 	nmass_root += root_ndemand;
+ }
+ 
+-void Individual::reduce_biomass(double mortality, double mortality_fire) {
++void Individual::reduce_biomass(double mortality, double mortality_fire, bool bfire, bool bgreff, double mort_ratio) {
+ 
+ 	// This function needs to be modified if a new lifeform is added,
+ 	// specifically to deal with nstore().
+@@ -1796,6 +1796,16 @@
+ 		report_flux(Fluxes::N2O_FIRE, Fluxes::N2O_FIRERATIO * nflux_fire);
+ 		report_flux(Fluxes::N2_FIRE,  Fluxes::N2_FIRERATIO  * nflux_fire);
+ 
++
++        //MORTC fluxes - TP 06.05.15
++        if (bfire) {
++            report_flux(Fluxes::MORTFIREC, cmass_leaf_litter+cmass_root_litter+(mortality*cmass_wood()));
++        }
++        else if (bgreff) {
++            report_flux(Fluxes::MORTMINC, (cmass_leaf_litter+cmass_root_litter+(mortality*cmass_wood()))*mort_ratio);
++            report_flux(Fluxes::MORTGROWC, (cmass_leaf_litter+cmass_root_litter+(mortality*cmass_wood()))*(1.0-mort_ratio));
++        }
++
+ 		// Reduce this Individual's biomass values
+ 
+ 		ppft.cmass_fire += mortality_fire * ccont();
+@@ -2320,7 +2330,7 @@
+ }
+ 
+ 
+-void Individual::kill(bool harvest /* = false */) {
++void Individual::kill(bool harvest, bool disturbing, bool bioclimatic, bool negbiom, bool badallom  /* = false */) {
+ 	Patchpft& ppft = patchpft();
+ 
+ 	double charvest_flux = 0.0;
+@@ -2376,7 +2386,31 @@
+ 		else
+ 			ppft.litter_root += cmass_root;
+ 
+-		if (pft.landcover == CROPLAND) {
++        if (disturbing) {
++            report_flux(Fluxes::MORTDISTC, cmass_leaf); //Report MORTC flux - TP 06.05.15
++            report_flux(Fluxes::MORTDISTC, cmass_root);
++        }
++        else if (bioclimatic) {
++            report_flux(Fluxes::MORTBCLIC, cmass_leaf); //Report MORTC flux - TP 06.05.15
++            report_flux(Fluxes::MORTBCLIC, cmass_root);
++        }
++        else if (negbiom) {
++            report_flux(Fluxes::MORTNBIOC, cmass_leaf); //Report MORTC flux - TP 06.05.15
++            report_flux(Fluxes::MORTNBIOC, cmass_root);
++        }
++        else if (badallom) {
++            report_flux(Fluxes::MORTALLOC, cmass_leaf); //Report MORTC flux - TP 06.05.15
++            report_flux(Fluxes::MORTALLOC, cmass_root);
++        }
++        else if (harvest) {
++            report_flux(Fluxes::MORTHARVC, cmass_leaf); //Report MORTC flux - TP 06.05.15
++            report_flux(Fluxes::MORTHARVC, cmass_root);
++        }
++        else {
++            report_flux(Fluxes::MORTC, cmass_leaf); //Report MORTC flux - TP 06.05.15
++            report_flux(Fluxes::MORTC, cmass_root);
++        }
++        if (pft.landcover == CROPLAND) {
+ 
+ 			if (has_daily_turnover()) {
+ 
+@@ -2447,7 +2481,42 @@
+ 				ppft.litter_heart += clitter_heart;
+ 
+ 				charvest_flux += cwood_harvest;
+-			}
++
++                if (disturbing) {
++                    report_flux(Fluxes::MORTDISTC, clitter_sap); //Report MORTC flux - TP 06.05.15
++                    report_flux(Fluxes::MORTDISTC, clitter_heart);
++                    report_flux(Fluxes::MORTDISTC, cwood_harvest);
++                }
++                else if (bioclimatic) {
++                    report_flux(Fluxes::MORTBCLIC, clitter_sap); //Report MORTC flux - TP 06.05.15
++                    report_flux(Fluxes::MORTBCLIC, clitter_heart);
++                    report_flux(Fluxes::MORTBCLIC, cwood_harvest);
++
++                }
++                else if (negbiom) {
++                    report_flux(Fluxes::MORTNBIOC, clitter_sap); //Report MORTC flux - TP 06.05.15
++                    report_flux(Fluxes::MORTNBIOC, clitter_heart);
++                    report_flux(Fluxes::MORTNBIOC, cwood_harvest);
++                }
++                else if (badallom) {
++                    report_flux(Fluxes::MORTALLOC, clitter_sap); //Report MORTC flux - TP 06.05.15
++                    report_flux(Fluxes::MORTALLOC, clitter_heart);
++                    report_flux(Fluxes::MORTALLOC, cwood_harvest);
++                }
++                else if (harvest) {
++                    report_flux(Fluxes::MORTHARVC, clitter_sap); //Report MORTC flux - TP 06.05.15
++                    report_flux(Fluxes::MORTHARVC, clitter_heart);
++                    report_flux(Fluxes::MORTHARVC, cwood_harvest);
++                }
++                else {
++                    report_flux(Fluxes::MORTC, clitter_sap); //Report MORTC flux - TP 06.05.15
++                    report_flux(Fluxes::MORTC, clitter_heart);
++                    report_flux(Fluxes::MORTC, cwood_harvest);
++                }
++
++
++            }
++
+ 			// debt larger than existing wood biomass
+ 			else {
+ 				double debt_excess = cmass_debt - (cmass_sap + cmass_heart);
+Index: framework/guess.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/framework/guess.h b/framework/guess.h
+--- a/framework/guess.h	(revision 10346)
++++ b/framework/guess.h	(date 1643184165482)
+@@ -1265,6 +1265,27 @@
+ 		MT_TRIC,
+ 		MT_TBOC,
+ 		MT_OTHR,
++
++
++        /// Carbon turnover from bioclimatic mortality - TP 13.11.15
++        MORTBCLIC,
++        /// Carbon turnover from negative biomass mortality - TP 13.11.15
++        MORTNBIOC,
++        /// Carbon turnover from bad allometry mortality - TP 13.11.15
++        MORTALLOC,
++        /// Carbon turnover from fire mortality - TP 13.11.15
++        MORTFIREC,
++        /// Carbon turnover from growth efficiency mortality  - TP 13.11.15
++        MORTGROWC,
++        /// Carbon turnover from background minimum mortality  - TP 29.04.16
++        MORTMINC,
++        /// Carbon turnover from harvest mortality  - TP 13.11.15
++        MORTHARVC,
++        /// Carbon turnover from other mortality  - TP 13.11.15
++        MORTC,
++        /// Carbon turnover from disturbance mortality (excluding fire)  - TP 13.11.15
++        MORTDISTC,
++
+ 		/// Number of types, must be last
+ 		NPERPFTFLUXTYPES
+ 	};
+@@ -3017,7 +3038,7 @@
+ 	 *  \param mortality_fire fraction of Individual's biomass killed due to
+ 	 *                        fire only
+ 	 */
+-	void reduce_biomass(double mortality, double mortality_fire);
++	void reduce_biomass(double mortality, double mortality_fire, bool bfire, bool bgreff, double mort_ratio);
+ 
+ 	/// A version of the above reduce_biomass for the use with BLAZE
+ 	void blaze_reduce_biomass(Patch& patch, double frac_survive);
+@@ -3081,7 +3102,7 @@
+ 	 *                 harvest will be done according to the PFT's harvest efficiency
+ 	 *                 and residue outtake.
+ 	 */
+-	void kill(bool harvest = false);
++	void kill(bool harvest, bool disturbing, bool bioclimatic, bool negbiom, bool badallom);
+ 
+ 	/// Annual mean wscal - water stress parameter (0-1 range; 1 = minimum stress)
+ 	/** Value only valid at end of year, after call to canopy_exchange().
+Index: modules/blaze.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/blaze.cpp b/modules/blaze.cpp
+--- a/modules/blaze.cpp	(revision 10346)
++++ b/modules/blaze.cpp	(date 1643184561440)
+@@ -609,7 +609,7 @@
+ 
+ 			if (indiv.pft.lifeform==GRASS) {
+ 				// Reduce individual live biomass and freshly created litter
+-				indiv.reduce_biomass(MAX_GRASS_BURN,MAX_GRASS_BURN);
++				indiv.reduce_biomass(MAX_GRASS_BURN,MAX_GRASS_BURN, true, false, 0.0);
+ 				
+ 				// Remove NPP and put it to fire flux
+ 				patch.fluxes.report_flux(Fluxes::FIREC,indiv.anpp*MAX_GRASS_BURN);
+@@ -617,7 +617,12 @@
+ 
+ 				// Kill object if burn is total
+ 				if ( MAX_GRASS_BURN == 1.0 ) {
+-					indiv.kill();
++                    /**
++                     * TODO blaze fire not properly accounted for.
++                     * Here just added as a disturbance flux.
++                     * Also there is the function blaze_reduce_biomass() that probably needs the fluxes added for fire.
++                     */
++					indiv.kill(false, false, false, false, false);
+ 					vegetation.killobj();
+ 					killed=true;
+ 				} 
+@@ -663,7 +668,12 @@
+ 				// Remove this cohort completely if all individuals killed
+ 				// (in individual mode: removes individual if killed)
+ 				if (negligible(indiv.densindiv)) {
+-					indiv.kill();
++                    /**
++                     * TODO blaze fire not properly accounted for.
++                     * Here just added as a disturbance flux.
++                     * Also there is the function blaze_reduce_biomass() that probably needs the fluxes added for fire.
++                     */
++					indiv.kill(false, true, false, false, false);
+ 					vegetation.killobj();
+ 					killed=true;
+ 				} 
+Index: modules/commonoutput.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/commonoutput.cpp b/modules/commonoutput.cpp
+--- a/modules/commonoutput.cpp	(revision 10346)
++++ b/modules/commonoutput.cpp	(date 1643184561416)
+@@ -220,6 +220,18 @@
+ 	cflux_columns += ColumnDescriptor("Soil",              8, 3);
+ 	cflux_columns += ColumnDescriptor("Fire",             10, 5);
+ 	cflux_columns += ColumnDescriptor("Est",               8, 3);
++
++    cflux_columns += ColumnDescriptor("MbcliC",            8, 3); //Adding MORTC flux - TP 06.05.15
++    cflux_columns += ColumnDescriptor("MnbioC",            8, 3); //Adding MORTC flux - TP 06.05.15
++    cflux_columns += ColumnDescriptor("MalloC",            8, 3); //Adding MORTC flux - TP 06.05.15
++    cflux_columns += ColumnDescriptor("MfireC",            8, 3); //Adding MORTC flux - TP 06.05.15
++    cflux_columns += ColumnDescriptor("MgrowC",            8, 3); //Adding MORTC flux - TP 06.05.15
++    cflux_columns += ColumnDescriptor("MminC",             8, 3); //Adding MORTC flux - TP 29.04.16
++    cflux_columns += ColumnDescriptor("MharvC",            8, 3); //Adding MORTC flux - TP 06.05.15
++    cflux_columns += ColumnDescriptor("MortC",             8, 3); //Adding MORTC flux - TP 09.02.15
++    cflux_columns += ColumnDescriptor("MortdC",            8, 3); //Adding MORTDISTC flux - TP 09.02.15
++
++
+ 	if (run_landcover) {
+ 		 cflux_columns += ColumnDescriptor("Seed",         8, 3);
+ 		 cflux_columns += ColumnDescriptor("Harvest",      9, 3);
+@@ -690,6 +702,9 @@
+ 
+ 	int c, m;
+ 	double flux_veg, flux_repr, flux_soil, flux_fire, flux_est, flux_seed, flux_charvest;
++    double flux_mortc, flux_mortdistc; //Adding MORTC and TURNC fluxes - TP 07.11.15
++    double flux_mortbclic, flux_mortnbioc, flux_mortalloc, flux_mortfirec, flux_mortgrowc, flux_mortharvc; //Adding MORTC fluxes - TP 06.05.15
++    double flux_mortminc; //Adding MORTC fluxes - TP 29.04.16
+ 	double c_fast, c_slow, c_harv_slow;
+ 
+ 	double surfsoillitterc,surfsoillittern,cwdc,cwdn,centuryc,centuryn,n_harv_slow,availn;
+@@ -793,6 +808,16 @@
+ 	double mean_standpft_nuptake=0.0;
+ 	double mean_standpft_vmaxnlim=0.0;
+ 
++    double mean_standpft_mbclic=0.0; //MORTC outputs - TP 13.11.15
++    double mean_standpft_mnbioc=0.0; //MORTC outputs - TP 13.11.15
++    double mean_standpft_malloc=0.0; //MORTC outputs - TP 13.11.15
++    double mean_standpft_mfirec=0.0; //MORTC outputs - TP 13.11.15
++    double mean_standpft_mgrowc=0.0; //MORTC outputs - TP 13.11.15
++    double mean_standpft_mminc=0.0; //MORTC outputs - TP 29.04.16
++    double mean_standpft_mharvc=0.0; //MORTC outputs - TP 13.11.15
++    double mean_standpft_mortc=0.0; //MORTC outputs - TP 13.11.15
++    double mean_standpft_mortdc=0.0; //MORTC outputs - TP 13.11.15
++
+ 	double cmass_gridcell=0.0;
+ 	double nmass_gridcell= 0.0;
+ 	double cmass_leaf_gridcell=0.0;
+@@ -855,6 +880,16 @@
+ 	double standpft_nuptake=0.0;
+ 	double standpft_vmaxnlim=0.0;
+ 
++    double standpft_mbclic=0.0; //MORTC outputs - TP 13.11.15
++    double standpft_mnbioc=0.0; //MORTC outputs - TP 13.11.15
++    double standpft_malloc=0.0; //MORTC outputs - TP 13.11.15
++    double standpft_mfirec=0.0; //MORTC outputs - TP 13.11.15
++    double standpft_mgrowc=0.0; //MORTC outputs - TP 13.11.15
++    double standpft_mminc=0.0; //MORTC outputs - TP 29.04.16
++    double standpft_mharvc=0.0; //MORTC outputs - TP 13.11.15
++    double standpft_mortc=0.0; //MORTC outputs - TP 13.11.15
++    double standpft_mortdc=0.0; //MORTC outputs - TP 13.11.15
++
+ 	// *** Loop through PFTs ***
+ 
+ 	pftlist.firstobj();
+@@ -884,6 +919,18 @@
+ 		mean_standpft_amon_mt2=0.0;
+ 		mean_standpft_nuptake=0.0;
+ 		mean_standpft_vmaxnlim=0.0;
++
++
++        mean_standpft_mbclic=0.0; //MORTC outputs - TP 13.11.15
++        mean_standpft_mnbioc=0.0; //MORTC outputs - TP 13.11.15
++        mean_standpft_malloc=0.0; //MORTC outputs - TP 13.11.15
++        mean_standpft_mfirec=0.0; //MORTC outputs - TP 13.11.15
++        mean_standpft_mgrowc=0.0; //MORTC outputs - TP 13.11.15
++        mean_standpft_mminc=0.0; //MORTC outputs - TP 29.04.16
++        mean_standpft_mharvc=0.0; //MORTC outputs - TP 13.11.15
++        mean_standpft_mortc=0.0; //MORTC outputs - TP 13.11.15
++        mean_standpft_mortdc=0.0; //MORTC outputs - TP 13.11.15
++
+ 		mean_standpft_heightindiv_total = 0.0;
+ 		mean_standpft_diamindiv_total = 0.0;
+ 
+@@ -934,6 +981,16 @@
+ 			standpft_nuptake=0.0;
+ 			standpft_vmaxnlim=0.0;
+ 
++            standpft_mbclic=0.0; //MORTC outputs - TP 13.11.15
++            standpft_mnbioc=0.0; //MORTC outputs - TP 13.11.15
++            standpft_malloc=0.0; //MORTC outputs - TP 13.11.15
++            standpft_mfirec=0.0; //MORTC outputs - TP 13.11.15
++            standpft_mgrowc=0.0; //MORTC outputs - TP 13.11.15
++            standpft_mminc=0.0; //MORTC outputs - TP 29.04.16
++            standpft_mharvc=0.0; //MORTC outputs - TP 13.11.15
++            standpft_mortc=0.0; //MORTC outputs - TP 13.11.15
++            standpft_mortdc=0.0; //MORTC outputs - TP 13.11.15
++
+ 			stand.firstobj();
+ 
+ 			// Loop through Patches
+@@ -963,7 +1020,18 @@
+ 				standpft_amon_mt2 += patch.fluxes.get_annual_flux(Fluxes::MT_CAMP, pft.id);
+ 				standpft_amon_mt2 += patch.fluxes.get_annual_flux(Fluxes::MT_TBOC, pft.id);
+ 				standpft_amon_mt2 += patch.fluxes.get_annual_flux(Fluxes::MT_OTHR, pft.id);
+-					
++
++                standpft_mbclic += patch.fluxes.get_annual_flux(Fluxes::MORTBCLIC, pft.id); //MORTC outputs - TP 13.11.15
++                standpft_mnbioc += patch.fluxes.get_annual_flux(Fluxes::MORTNBIOC, pft.id); //MORTC outputs - TP 13.11.15
++                standpft_malloc += patch.fluxes.get_annual_flux(Fluxes::MORTALLOC, pft.id); //MORTC outputs - TP 13.11.15
++                standpft_mfirec += patch.fluxes.get_annual_flux(Fluxes::MORTFIREC, pft.id); //MORTC outputs - TP 13.11.15
++                standpft_mgrowc += patch.fluxes.get_annual_flux(Fluxes::MORTGROWC, pft.id); //MORTC outputs - TP 13.11.15
++                standpft_mminc += patch.fluxes.get_annual_flux(Fluxes::MORTMINC, pft.id); //MORTC outputs - TP 29.04.16
++                standpft_mharvc += patch.fluxes.get_annual_flux(Fluxes::MORTHARVC, pft.id); //MORTC outputs - TP 13.11.15
++                standpft_mortc += patch.fluxes.get_annual_flux(Fluxes::MORTC, pft.id); //MORTC outputs - TP 13.11.15
++                standpft_mortdc += patch.fluxes.get_annual_flux(Fluxes::MORTDISTC, pft.id); //MORTC outputs - TP 13.11.15
++
++
+ 				standpft_clitter += patchpft.litter_leaf + patchpft.litter_root + patchpft.litter_sap + patchpft.litter_heart + patchpft.litter_repr;
+ 				standpft_nlitter += patchpft.nmass_litter_leaf + patchpft.nmass_litter_root + patchpft.nmass_litter_sap + patchpft.nmass_litter_heart;
+ 
+@@ -1037,6 +1105,19 @@
+ 				standpft_heightindiv_total/=(double)stand.npatch();
+ 				standpft_diamindiv_total/=(double)stand.npatch();
+ 
++
++
++            standpft_mbclic/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
++            standpft_mnbioc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
++            standpft_malloc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
++            standpft_mfirec/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
++            standpft_mgrowc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
++            standpft_mminc/=(double)stand.npatch(); //MORTC outputs - TP 29.04.16
++            standpft_mharvc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
++            standpft_mortc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
++            standpft_mortdc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
++
++
+ 				if (!negligible(standpft_cmass_leaf))
+ 					standpft_vmaxnlim /= standpft_cmass_leaf;
+ 
+@@ -1088,6 +1169,18 @@
+ 					mean_standpft_amon_mt2 += standpft_amon_mt2 * stand.get_gridcell_fraction() / active_fraction;
+ 					mean_standpft_nuptake += standpft_nuptake * stand.get_gridcell_fraction() / active_fraction;
+ 					mean_standpft_vmaxnlim += standpft_vmaxnlim * stand.get_gridcell_fraction() / active_fraction;
++
++
++                    mean_standpft_mbclic+=standpft_mbclic * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
++                    mean_standpft_mnbioc+=standpft_mnbioc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
++                    mean_standpft_malloc+=standpft_malloc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
++                    mean_standpft_mfirec+=standpft_mfirec * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
++                    mean_standpft_mgrowc+=standpft_mgrowc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
++                    mean_standpft_mminc+=standpft_mminc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 29.04.16
++                    mean_standpft_mharvc+=standpft_mharvc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
++                    mean_standpft_mortc+=standpft_mortc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
++                    mean_standpft_mortdc+=standpft_mortdc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
++
+ 				}
+ 
+ 				// Update gridcell totals
+@@ -1169,6 +1262,9 @@
+ 	} // *** End of PFT loop ***
+ 
+ 	flux_veg = flux_repr = flux_soil = flux_fire = flux_est = flux_seed = flux_charvest = 0.0;
++    flux_mortc = flux_mortdistc; //Adding MORTC and TURNC fluxes - TP 07.11.15
++    flux_mortbclic = flux_mortnbioc = flux_mortalloc = flux_mortfirec = flux_mortgrowc = flux_mortharvc = 0.0; //Adding MORTC fluxes - TP 06.05.15
++    flux_mortminc = 0.0; //TP 29.04.16
+ 
+ 	// guess2008 - carbon pools
+ 	c_fast = c_slow = c_harv_slow = 0.0;
+@@ -1212,6 +1308,18 @@
+ 			flux_soil+=patch.fluxes.get_annual_flux(Fluxes::SOILC)*to_gridcell_average;
+ 			flux_fire+=patch.fluxes.get_annual_flux(Fluxes::FIREC)*to_gridcell_average;
+ 			flux_est+=patch.fluxes.get_annual_flux(Fluxes::ESTC)*to_gridcell_average;
++
++
++            flux_mortbclic+=patch.fluxes.get_annual_flux(Fluxes::MORTBCLIC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
++            flux_mortnbioc+=patch.fluxes.get_annual_flux(Fluxes::MORTNBIOC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
++            flux_mortalloc+=patch.fluxes.get_annual_flux(Fluxes::MORTALLOC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
++            flux_mortfirec+=patch.fluxes.get_annual_flux(Fluxes::MORTFIREC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
++            flux_mortgrowc+=patch.fluxes.get_annual_flux(Fluxes::MORTGROWC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
++            flux_mortminc+=patch.fluxes.get_annual_flux(Fluxes::MORTMINC)*to_gridcell_average; //Adding MORTC flux - TP 29.04.16
++            flux_mortharvc+=patch.fluxes.get_annual_flux(Fluxes::MORTHARVC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
++            flux_mortc+=patch.fluxes.get_annual_flux(Fluxes::MORTC)*to_gridcell_average; //Adding MORTC flux - TP 09.02.15
++            flux_mortdistc+=patch.fluxes.get_annual_flux(Fluxes::MORTDISTC)*to_gridcell_average; //Adding MORTDISTC flux - TP 09.02.15
++
+ 			flux_seed+=patch.fluxes.get_annual_flux(Fluxes::SEEDC)*to_gridcell_average;
+ 			flux_charvest+=patch.fluxes.get_annual_flux(Fluxes::HARVESTC)*to_gridcell_average;
+ 
+@@ -1598,6 +1706,19 @@
+ 	outlimit(out,out_cflux, flux_soil + c_org_leach_gridcell);
+ 	outlimit(out,out_cflux, flux_fire);
+ 	outlimit(out,out_cflux, flux_est);
++
++
++    outlimit(out,out_cflux, flux_mortbclic); //Adding MORTC flux - TP 06.05.15
++    outlimit(out,out_cflux, flux_mortnbioc); //Adding MORTC flux - TP 06.05.15
++    outlimit(out,out_cflux, flux_mortalloc); //Adding MORTC flux - TP 06.05.15
++    outlimit(out,out_cflux, flux_mortfirec); //Adding MORTC flux - TP 06.05.15
++    outlimit(out,out_cflux, flux_mortgrowc); //Adding MORTC flux - TP 06.05.15
++    outlimit(out,out_cflux, flux_mortminc); //Adding MORTC flux - TP 29.04.16
++    outlimit(out,out_cflux, flux_mortharvc); //Adding MORTC flux - TP 06.05.15
++    outlimit(out,out_cflux, flux_mortc); //Adding MORTC flux - TP 09.02.15
++    outlimit(out,out_cflux, flux_mortdistc); //Adding MORTDISTC flux - TP 09.02.15
++
++
+ 	if (run_landcover) {
+ 			outlimit(out,out_cflux, flux_seed);
+ 			outlimit(out,out_cflux, flux_charvest);
+Index: modules/growth.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/growth.cpp b/modules/growth.cpp
+--- a/modules/growth.cpp	(revision 10346)
++++ b/modules/growth.cpp	(date 1643018426897)
+@@ -1389,7 +1389,7 @@
+ 						if(indiv.alive)
+ 							patchpft.cmass_mort += indiv.cmass_leaf + indiv.cmass_root + indiv.cmass_wood();
+ 
+-						indiv.kill();
++                        indiv.kill(false, false, false, true, false);
+ 
+ 						vegetation.killobj();
+ 						killed = true;
+@@ -1482,7 +1482,8 @@
+ 						if(indiv.alive)
+ 							patchpft.cmass_mort += indiv.cmass_leaf + indiv.cmass_root + indiv.cmass_wood();
+ 
+-						indiv.kill();
++
++                        indiv.kill(false,false,false,true,false);
+ 
+ 						vegetation.killobj();
+ 						killed = true;
+@@ -1523,7 +1524,7 @@
+ 
+ 			if (!allometry(indiv)) {
+ 
+-				indiv.kill();
++                indiv.kill(false,false,false,false,true);
+ 
+ 				vegetation.killobj();
+ 				killed = true;
+Index: modules/management.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/management.cpp b/modules/management.cpp
+--- a/modules/management.cpp	(revision 10346)
++++ b/modules/management.cpp	(date 1643184047262)
+@@ -1428,7 +1428,7 @@
+ 					patch.fluxes.report_flux(Fluxes::HARVESTC, anpp);
+ 			}
+ 			// Grass if killgrass == true
+-			indiv.kill();
++            indiv.kill(true, false, false, false, false);
+ 			indiv.vegetation.killobj();
+ 			killed = true;
+ 		}
+Index: modules/vegdynam.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/vegdynam.cpp b/modules/vegdynam.cpp
+--- a/modules/vegdynam.cpp	(revision 10346)
++++ b/modules/vegdynam.cpp	(date 1643184047278)
+@@ -828,7 +828,7 @@
+ 
+ 			// Remove completely if PFT beyond its bioclimatic limits for survival
+ 
+-			indiv.kill();
++            indiv.kill(false, false, true, false, false);
+ 
+ 			vegetation.killobj();
+ 			killed=true;
+@@ -889,7 +889,7 @@
+ 
+ 			// Reduce population density and C biomass on modelled area basis
+ 			// to account for loss of killed individuals
+-			indiv.reduce_biomass(mort, mort_fire);
++            indiv.reduce_biomass(mort, mort_fire, true, false, 0.0);
+ 		}
+ 		else if (indiv.pft.lifeform==GRASS || indiv.pft.lifeform == MOSS) {
+ 
+@@ -923,7 +923,7 @@
+ 
+ 			// Reduce C biomass on modelled area basis to account for biomass lost
+ 			// through mortality
+-			indiv.reduce_biomass(mort, mort_fire);
++            indiv.reduce_biomass(mort, mort_fire, true, false, 0.0);
+ 		}
+ 
+ 		// Remove this PFT population completely if all individuals killed
+@@ -980,6 +980,10 @@
+ 	double mort_min;
+ 	// Component of overall mortality associated with low growth efficiency
+ 	double mort_greff;
++
++    // ratio of mort_min to mort_greff - TP 29.04.16
++    double mort_ratio;
++
+ 	// Expected fraction of cohort killed (or: probability of individual being
+ 	// killed) due to fire
+ 	double mort_fire;
+@@ -1065,7 +1069,7 @@
+ 					// GRASS AND MOSS PFTs
+ 
+ 					// Reduce individual biomass
+-					indiv.reduce_biomass(mort_fire, mort_fire);
++                    indiv.reduce_biomass(mort_fire, mort_fire, true, false, 0.0);
+ 
+ 					// Update allometry
+ 
+@@ -1101,7 +1105,7 @@
+ 
+ 					// Reduce individual biomass on patch area basis
+ 					// to account for loss of killed individuals
+-					indiv.reduce_biomass(1.0 - frac_survive, 1.0 - frac_survive);
++                    indiv.reduce_biomass(1.0 - frac_survive, 1.0 - frac_survive, true, false, 0.0);
+ 
+ 					// Remove this cohort completely if all individuals killed
+ 					// (in individual mode: removes individual if killed)
+@@ -1138,7 +1142,7 @@
+ 
+ 			patchpft.cmass_mort += indiv.ccont();
+ 
+-			indiv.kill();
++            indiv.kill(false, false, true, false, false);
+ 
+ 			vegetation.killobj();
+ 			killed=true;
+@@ -1232,7 +1236,7 @@
+ 				// Overall mortality: c.f. Eqn 29, Smith et al 2001
+ 
+ 				mort=mort_min+mort_greff-mort_min*mort_greff;
+-
++                mort_ratio=mort_min/mort; //Added to separate mort fluxes later - TP 29.04.16
+ 
+ 				// guess2008 - added safety check
+ 				if (mort > 1.0 || mort < 0.0)
+@@ -1263,7 +1267,7 @@
+ 
+ 				// Reduce individual density and biomass on patch area basis
+ 				// to account for loss of killed individuals
+-				indiv.reduce_biomass(1.0 - frac_survive, 0.0);
++                indiv.reduce_biomass(1.0 - frac_survive, 0.0, false, true, mort_ratio);
+ 
+ 				// Remove this cohort completely if all individuals killed
+ 				// (in individual mode: removes individual if killed)
+@@ -1310,7 +1314,7 @@
+ 						// Reduce C biomass to account for biomass lost through shading mortality
+ 						if (mort_shade> 0.0) {
+ 							patchpft.cmass_mort += mort_shade * indiv.ccont();
+-							indiv.reduce_biomass(mort_shade, 0.0);
++							indiv.reduce_biomass(mort_shade, 0.0, false, false, 0.0);
+ 							allometry(indiv);
+ 						}
+ 
+@@ -1526,7 +1530,7 @@
+ 			if(indiv.alive)
+ 				patchpft.cmass_dist += indiv.ccont();
+ 
+-			indiv.kill();
++            indiv.kill(false, true, false, false, false);
+ 
+ 			vegetation.killobj();
+ 		}

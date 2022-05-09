@@ -609,7 +609,7 @@ bool blaze(Patch& patch, Climate& climate) {
 
 			if (indiv.pft.lifeform==GRASS) {
 				// Reduce individual live biomass and freshly created litter
-				indiv.reduce_biomass(MAX_GRASS_BURN,MAX_GRASS_BURN);
+				indiv.reduce_biomass(MAX_GRASS_BURN,MAX_GRASS_BURN, true, false, 0.0);
 				
 				// Remove NPP and put it to fire flux
 				patch.fluxes.report_flux(Fluxes::FIREC,indiv.anpp*MAX_GRASS_BURN);
@@ -617,7 +617,12 @@ bool blaze(Patch& patch, Climate& climate) {
 
 				// Kill object if burn is total
 				if ( MAX_GRASS_BURN == 1.0 ) {
-					indiv.kill();
+                    /**
+                     * TODO blaze fire not properly accounted for.
+                     * Here just added as a disturbance flux.
+                     * Also there is the function blaze_reduce_biomass() that probably needs the fluxes added for fire.
+                     */
+					indiv.kill(false, false, false, false, false);
 					vegetation.killobj();
 					killed=true;
 				} 
@@ -663,7 +668,12 @@ bool blaze(Patch& patch, Climate& climate) {
 				// Remove this cohort completely if all individuals killed
 				// (in individual mode: removes individual if killed)
 				if (negligible(indiv.densindiv)) {
-					indiv.kill();
+                    /**
+                     * TODO blaze fire not properly accounted for.
+                     * Here just added as a disturbance flux.
+                     * Also there is the function blaze_reduce_biomass() that probably needs the fluxes added for fire.
+                     */
+					indiv.kill(false, true, false, false, false);
 					vegetation.killobj();
 					killed=true;
 				} 

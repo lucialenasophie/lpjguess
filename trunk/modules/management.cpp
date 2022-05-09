@@ -261,7 +261,7 @@ void clearcut(Individual& indiv, double anpp, bool& killed) {
 		if(indiv.alive)
 			ppft.litter_sap += anpp;
 		harvest_wood(indiv, 1.0, indiv.pft.harv_eff, indiv.pft.res_outtake); // frac_cut=1, harv_eff=pft.harv_eff, res_outtake_twig=pft.res_outtake, res_outtake_coarse_root=0
-		indiv.kill();
+		indiv.kill(true, false, false, false, false);
 		indiv.vegetation.killobj();
 		killed = true;
 	}

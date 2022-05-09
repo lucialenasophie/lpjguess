@@ -1242,6 +1242,27 @@ public:
 		MT_TRIC,
 		MT_TBOC,
 		MT_OTHR,
+
+
+        /// Carbon turnover from bioclimatic mortality - TP 13.11.15
+        MORTBCLIC,
+        /// Carbon turnover from negative biomass mortality - TP 13.11.15
+        MORTNBIOC,
+        /// Carbon turnover from bad allometry mortality - TP 13.11.15
+        MORTALLOC,
+        /// Carbon turnover from fire mortality - TP 13.11.15
+        MORTFIREC,
+        /// Carbon turnover from growth efficiency mortality  - TP 13.11.15
+        MORTGROWC,
+        /// Carbon turnover from background minimum mortality  - TP 29.04.16
+        MORTMINC,
+        /// Carbon turnover from harvest mortality  - TP 13.11.15
+        MORTHARVC,
+        /// Carbon turnover from other mortality  - TP 13.11.15
+        MORTC,
+        /// Carbon turnover from disturbance mortality (excluding fire)  - TP 13.11.15
+        MORTDISTC,
+
 		/// Number of types, must be last
 		NPERPFTFLUXTYPES
 	};
@@ -2748,7 +2769,7 @@ public:
 	 *  \param mortality_fire fraction of Individual's biomass killed due to
 	 *                        fire only
 	 */
-	void reduce_biomass(double mortality, double mortality_fire);
+	void reduce_biomass(double mortality, double mortality_fire, bool bfire, bool bgreff, double mort_ratio);
 
 	/// A version of the above reduce_biomass for the use with BLAZE
 	void blaze_reduce_biomass(Patch& patch, double frac_survive);
@@ -2812,7 +2833,7 @@ public:
 	 *                 harvest will be done according to the PFT's harvest efficiency
 	 *                 and residue outtake.
 	 */
-	void kill(bool harvest = false);
+	void kill(bool harvest, bool disturbing, bool bioclimatic, bool negbiom, bool badallom);
 
 	/// Annual mean wscal - water stress parameter (0-1 range; 1 = minimum stress)
 	/** Value only valid at end of year, after call to canopy_exchange().

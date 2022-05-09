@@ -1372,7 +1372,8 @@ void growth(Stand& stand, Patch& patch) {
 					if (indiv.cmass_leaf < MINCMASS || indiv.cmass_root < MINCMASS ||
 						indiv.cmass_sap < MINCMASS) {
 
-						indiv.kill();
+
+                        indiv.kill(false,false,false,true,false);
 
 						vegetation.killobj();
 						killed = true;
@@ -1460,7 +1461,7 @@ void growth(Stand& stand, Patch& patch) {
 					// Note - what happens if cmass_root = 0?
 					if ((indiv.cmass_leaf < MINCMASS || indiv.cmass_root < MINCMASS) && !indiv.istruecrop_or_intercropgrass()) {
 
-						indiv.kill();
+                        indiv.kill(false, false, false, true, false);
 
 						vegetation.killobj();
 						killed = true;
@@ -1501,7 +1502,7 @@ void growth(Stand& stand, Patch& patch) {
 
 			if (!allometry(indiv)) {
 
-				indiv.kill();
+                indiv.kill(false,false,false,false,true);
 
 				vegetation.killobj();
 				killed = true;

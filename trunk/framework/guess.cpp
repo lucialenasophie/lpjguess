@@ -1374,7 +1374,7 @@ void nstore_adjust(double& cmass_leaf,double& cmass_root, double& nmass_leaf, do
 	nmass_root += root_ndemand;
 }
 
-void Individual::reduce_biomass(double mortality, double mortality_fire) {
+void Individual::reduce_biomass(double mortality, double mortality_fire, bool bfire, bool bgreff, double mort_ratio) {
 
 	// This function needs to be modified if a new lifeform is added,
 	// specifically to deal with nstore().
@@ -1452,6 +1452,16 @@ void Individual::reduce_biomass(double mortality, double mortality_fire) {
 		report_flux(Fluxes::NOx_FIRE, Fluxes::NOx_FIRERATIO * nflux_fire);
 		report_flux(Fluxes::N2O_FIRE, Fluxes::N2O_FIRERATIO * nflux_fire);
 		report_flux(Fluxes::N2_FIRE,  Fluxes::N2_FIRERATIO  * nflux_fire);
+
+
+        //MORTC fluxes - TP 06.05.15
+        if (bfire) {
+            report_flux(Fluxes::MORTFIREC, cmass_leaf_litter+cmass_root_litter+(mortality*cmass_wood()));
+        }
+        else if (bgreff) {
+            report_flux(Fluxes::MORTMINC, (cmass_leaf_litter+cmass_root_litter+(mortality*cmass_wood()))*mort_ratio);
+            report_flux(Fluxes::MORTGROWC, (cmass_leaf_litter+cmass_root_litter+(mortality*cmass_wood()))*(1.0-mort_ratio));
+        }
 
 		// Reduce this Individual's biomass values
 
@@ -1974,7 +1984,7 @@ void partition_wood_biomass(double mass_sap, double mass_heart,
 }
 
 
-void Individual::kill(bool harvest /* = false */) {
+void Individual::kill(bool harvest, bool disturbing, bool bioclimatic, bool negbiom, bool badallom  /* = false */) {
 	Patchpft& ppft = patchpft();
 
 	double charvest_flux = 0.0;
@@ -2030,7 +2040,31 @@ void Individual::kill(bool harvest /* = false */) {
 		else
 			ppft.litter_root += cmass_root;
 
-		if (pft.landcover == CROPLAND) {
+        if (disturbing) {
+            report_flux(Fluxes::MORTDISTC, cmass_leaf); //Report MORTC flux - TP 06.05.15
+            report_flux(Fluxes::MORTDISTC, cmass_root);
+        }
+        else if (bioclimatic) {
+            report_flux(Fluxes::MORTBCLIC, cmass_leaf); //Report MORTC flux - TP 06.05.15
+            report_flux(Fluxes::MORTBCLIC, cmass_root);
+        }
+        else if (negbiom) {
+            report_flux(Fluxes::MORTNBIOC, cmass_leaf); //Report MORTC flux - TP 06.05.15
+            report_flux(Fluxes::MORTNBIOC, cmass_root);
+        }
+        else if (badallom) {
+            report_flux(Fluxes::MORTALLOC, cmass_leaf); //Report MORTC flux - TP 06.05.15
+            report_flux(Fluxes::MORTALLOC, cmass_root);
+        }
+        else if (harvest) {
+            report_flux(Fluxes::MORTHARVC, cmass_leaf); //Report MORTC flux - TP 06.05.15
+            report_flux(Fluxes::MORTHARVC, cmass_root);
+        }
+        else {
+            report_flux(Fluxes::MORTC, cmass_leaf); //Report MORTC flux - TP 06.05.15
+            report_flux(Fluxes::MORTC, cmass_root);
+        }
+        if (pft.landcover == CROPLAND) {
 
 			if (has_daily_turnover()) {
 
@@ -2101,7 +2135,42 @@ void Individual::kill(bool harvest /* = false */) {
 				ppft.litter_heart += clitter_heart;
 
 				charvest_flux += cwood_harvest;
-			}
+
+                if (disturbing) {
+                    report_flux(Fluxes::MORTDISTC, clitter_sap); //Report MORTC flux - TP 06.05.15
+                    report_flux(Fluxes::MORTDISTC, clitter_heart);
+                    report_flux(Fluxes::MORTDISTC, cwood_harvest);
+                }
+                else if (bioclimatic) {
+                    report_flux(Fluxes::MORTBCLIC, clitter_sap); //Report MORTC flux - TP 06.05.15
+                    report_flux(Fluxes::MORTBCLIC, clitter_heart);
+                    report_flux(Fluxes::MORTBCLIC, cwood_harvest);
+
+                }
+                else if (negbiom) {
+                    report_flux(Fluxes::MORTNBIOC, clitter_sap); //Report MORTC flux - TP 06.05.15
+                    report_flux(Fluxes::MORTNBIOC, clitter_heart);
+                    report_flux(Fluxes::MORTNBIOC, cwood_harvest);
+                }
+                else if (badallom) {
+                    report_flux(Fluxes::MORTALLOC, clitter_sap); //Report MORTC flux - TP 06.05.15
+                    report_flux(Fluxes::MORTALLOC, clitter_heart);
+                    report_flux(Fluxes::MORTALLOC, cwood_harvest);
+                }
+                else if (harvest) {
+                    report_flux(Fluxes::MORTHARVC, clitter_sap); //Report MORTC flux - TP 06.05.15
+                    report_flux(Fluxes::MORTHARVC, clitter_heart);
+                    report_flux(Fluxes::MORTHARVC, cwood_harvest);
+                }
+                else {
+                    report_flux(Fluxes::MORTC, clitter_sap); //Report MORTC flux - TP 06.05.15
+                    report_flux(Fluxes::MORTC, clitter_heart);
+                    report_flux(Fluxes::MORTC, cwood_harvest);
+                }
+
+
+            }
+
 			// debt larger than existing wood biomass
 			else {
 				double debt_excess = cmass_debt - (cmass_sap + cmass_heart);

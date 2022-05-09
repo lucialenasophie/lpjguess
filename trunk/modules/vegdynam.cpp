@@ -800,7 +800,7 @@ void mortality_lpj(Stand& stand, Patch& patch, const Climate& climate, double fi
 
 			// Remove completely if PFT beyond its bioclimatic limits for survival
 
-			indiv.kill();
+            indiv.kill(false, false, true, false, false);
 
 			vegetation.killobj();
 			killed=true;
@@ -861,7 +861,7 @@ void mortality_lpj(Stand& stand, Patch& patch, const Climate& climate, double fi
 
 			// Reduce population density and C biomass on modelled area basis
 			// to account for loss of killed individuals
-			indiv.reduce_biomass(mort, mort_fire);
+            indiv.reduce_biomass(mort, mort_fire, true, false, 0.0);
 		}
 		else if (indiv.pft.lifeform==GRASS || indiv.pft.lifeform == MOSS) {
 
@@ -895,7 +895,7 @@ void mortality_lpj(Stand& stand, Patch& patch, const Climate& climate, double fi
 
 			// Reduce C biomass on modelled area basis to account for biomass lost
 			// through mortality
-			indiv.reduce_biomass(mort, mort_fire);
+            indiv.reduce_biomass(mort, mort_fire, true, false, 0.0);
 		}
 
 		// Remove this PFT population completely if all individuals killed
@@ -955,6 +955,10 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 	double mort_min;
 	// Component of overall mortality associated with low growth efficiency
 	double mort_greff;
+
+    // ratio of mort_min to mort_greff - TP 29.04.16
+    double mort_ratio;
+
 	// Expected fraction of cohort killed (or: probability of individual being
 	// killed) due to fire
 	double mort_fire;
@@ -1038,7 +1042,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 					// GRASS AND MOSS PFTs
 
 					// Reduce individual biomass
-					indiv.reduce_biomass(mort_fire, mort_fire);
+                    indiv.reduce_biomass(mort_fire, mort_fire, true, false, 0.0);
 
 					// Update allometry
 
@@ -1074,7 +1078,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 
 					// Reduce individual biomass on patch area basis
 					// to account for loss of killed individuals
-					indiv.reduce_biomass(1.0 - frac_survive, 1.0 - frac_survive);
+                    indiv.reduce_biomass(1.0 - frac_survive, 1.0 - frac_survive, true, false, 0.0);
 
 					// Remove this cohort completely if all individuals killed
 					// (in individual mode: removes individual if killed)
@@ -1108,7 +1112,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 
 			// Kill cohort/individual, transfer biomass to litter
 
-			indiv.kill();
+            indiv.kill(false, false, true, false, false);
 
 			vegetation.killobj();
 			killed=true;
@@ -1202,7 +1206,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 				// Overall mortality: c.f. Eqn 29, Smith et al 2001
 
 				mort=mort_min+mort_greff-mort_min*mort_greff;
-
+                mort_ratio=mort_min/mort; //Added to separate mort fluxes later - TP 29.04.16
 
 				// guess2008 - added safety check
 				if (mort > 1.0 || mort < 0.0)
@@ -1231,7 +1235,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 
 				// Reduce individual density and biomass on patch area basis
 				// to account for loss of killed individuals
-				indiv.reduce_biomass(1.0 - frac_survive, 0.0);
+                indiv.reduce_biomass(1.0 - frac_survive, 0.0, false, true, mort_ratio);
 
 				// Remove this cohort completely if all individuals killed
 				// (in individual mode: removes individual if killed)
@@ -1277,7 +1281,7 @@ void mortality_guess(Stand& stand, Patch& patch, const Climate& climate, double 
 
 						// Reduce C biomass to account for biomass lost through shading mortality
 						if (mort_shade> 0.0) {
-							indiv.reduce_biomass(mort_shade, 0.0);
+							indiv.reduce_biomass(mort_shade, 0.0, false, false, 0.0);
 							allometry(indiv);
 						}
 
@@ -1489,7 +1493,7 @@ void disturbance(Patch& patch, double disturb_prob, Gridcell& gridcell) {
 		while (vegetation.isobj) {
 			Individual& indiv = vegetation.getobj();
 
-			indiv.kill();
+            indiv.kill(false, true, false, false, false);
 
 			vegetation.killobj();
 		}

@@ -220,6 +220,18 @@ void CommonOutput::define_output_tables() {
 	cflux_columns += ColumnDescriptor("Soil",              8, 3);
 	cflux_columns += ColumnDescriptor("Fire",             10, 5);
 	cflux_columns += ColumnDescriptor("Est",               8, 3);
+
+    cflux_columns += ColumnDescriptor("MbcliC",            8, 3); //Adding MORTC flux - TP 06.05.15
+    cflux_columns += ColumnDescriptor("MnbioC",            8, 3); //Adding MORTC flux - TP 06.05.15
+    cflux_columns += ColumnDescriptor("MalloC",            8, 3); //Adding MORTC flux - TP 06.05.15
+    cflux_columns += ColumnDescriptor("MfireC",            8, 3); //Adding MORTC flux - TP 06.05.15
+    cflux_columns += ColumnDescriptor("MgrowC",            8, 3); //Adding MORTC flux - TP 06.05.15
+    cflux_columns += ColumnDescriptor("MminC",             8, 3); //Adding MORTC flux - TP 29.04.16
+    cflux_columns += ColumnDescriptor("MharvC",            8, 3); //Adding MORTC flux - TP 06.05.15
+    cflux_columns += ColumnDescriptor("MortC",             8, 3); //Adding MORTC flux - TP 09.02.15
+    cflux_columns += ColumnDescriptor("MortdC",            8, 3); //Adding MORTDISTC flux - TP 09.02.15
+
+
 	if (run_landcover) {
 		 cflux_columns += ColumnDescriptor("Seed",         8, 3);
 		 cflux_columns += ColumnDescriptor("Harvest",      9, 3);
@@ -689,6 +701,9 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 
 	int c, m;
 	double flux_veg, flux_repr, flux_soil, flux_fire, flux_est, flux_seed, flux_charvest;
+    double flux_mortc, flux_mortdistc; //Adding MORTC and TURNC fluxes - TP 07.11.15
+    double flux_mortbclic, flux_mortnbioc, flux_mortalloc, flux_mortfirec, flux_mortgrowc, flux_mortharvc; //Adding MORTC fluxes - TP 06.05.15
+    double flux_mortminc; //Adding MORTC fluxes - TP 29.04.16
 	double c_fast, c_slow, c_harv_slow;
 
 	double surfsoillitterc,surfsoillittern,cwdc,cwdn,centuryc,centuryn,n_harv_slow,availn;
@@ -791,6 +806,16 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 	double mean_standpft_nuptake=0.0;
 	double mean_standpft_vmaxnlim=0.0;
 
+    double mean_standpft_mbclic=0.0; //MORTC outputs - TP 13.11.15
+    double mean_standpft_mnbioc=0.0; //MORTC outputs - TP 13.11.15
+    double mean_standpft_malloc=0.0; //MORTC outputs - TP 13.11.15
+    double mean_standpft_mfirec=0.0; //MORTC outputs - TP 13.11.15
+    double mean_standpft_mgrowc=0.0; //MORTC outputs - TP 13.11.15
+    double mean_standpft_mminc=0.0; //MORTC outputs - TP 29.04.16
+    double mean_standpft_mharvc=0.0; //MORTC outputs - TP 13.11.15
+    double mean_standpft_mortc=0.0; //MORTC outputs - TP 13.11.15
+    double mean_standpft_mortdc=0.0; //MORTC outputs - TP 13.11.15
+
 	double cmass_gridcell=0.0;
 	double nmass_gridcell= 0.0;
 	double cmass_leaf_gridcell=0.0;
@@ -851,6 +876,16 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 	double standpft_amon_mt2=0.0;
 	double standpft_nuptake=0.0;
 	double standpft_vmaxnlim=0.0;
+
+    double standpft_mbclic=0.0; //MORTC outputs - TP 13.11.15
+    double standpft_mnbioc=0.0; //MORTC outputs - TP 13.11.15
+    double standpft_malloc=0.0; //MORTC outputs - TP 13.11.15
+    double standpft_mfirec=0.0; //MORTC outputs - TP 13.11.15
+    double standpft_mgrowc=0.0; //MORTC outputs - TP 13.11.15
+    double standpft_mminc=0.0; //MORTC outputs - TP 29.04.16
+    double standpft_mharvc=0.0; //MORTC outputs - TP 13.11.15
+    double standpft_mortc=0.0; //MORTC outputs - TP 13.11.15
+    double standpft_mortdc=0.0; //MORTC outputs - TP 13.11.15
 
 	// *** Loop through PFTs ***
 
@@ -930,6 +965,16 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 			standpft_nuptake=0.0;
 			standpft_vmaxnlim=0.0;
 
+            standpft_mbclic=0.0; //MORTC outputs - TP 13.11.15
+            standpft_mnbioc=0.0; //MORTC outputs - TP 13.11.15
+            standpft_malloc=0.0; //MORTC outputs - TP 13.11.15
+            standpft_mfirec=0.0; //MORTC outputs - TP 13.11.15
+            standpft_mgrowc=0.0; //MORTC outputs - TP 13.11.15
+            standpft_mminc=0.0; //MORTC outputs - TP 29.04.16
+            standpft_mharvc=0.0; //MORTC outputs - TP 13.11.15
+            standpft_mortc=0.0; //MORTC outputs - TP 13.11.15
+            standpft_mortdc=0.0; //MORTC outputs - TP 13.11.15
+
 			stand.firstobj();
 
 			// Loop through Patches
@@ -959,7 +1004,18 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 				standpft_amon_mt2 += patch.fluxes.get_annual_flux(Fluxes::MT_CAMP, pft.id);
 				standpft_amon_mt2 += patch.fluxes.get_annual_flux(Fluxes::MT_TBOC, pft.id);
 				standpft_amon_mt2 += patch.fluxes.get_annual_flux(Fluxes::MT_OTHR, pft.id);
-					
+
+                standpft_mbclic += patch.fluxes.get_annual_flux(Fluxes::MORTBCLIC, pft.id); //MORTC outputs - TP 13.11.15
+                standpft_mnbioc += patch.fluxes.get_annual_flux(Fluxes::MORTNBIOC, pft.id); //MORTC outputs - TP 13.11.15
+                standpft_malloc += patch.fluxes.get_annual_flux(Fluxes::MORTALLOC, pft.id); //MORTC outputs - TP 13.11.15
+                standpft_mfirec += patch.fluxes.get_annual_flux(Fluxes::MORTFIREC, pft.id); //MORTC outputs - TP 13.11.15
+                standpft_mgrowc += patch.fluxes.get_annual_flux(Fluxes::MORTGROWC, pft.id); //MORTC outputs - TP 13.11.15
+                standpft_mminc += patch.fluxes.get_annual_flux(Fluxes::MORTMINC, pft.id); //MORTC outputs - TP 29.04.16
+                standpft_mharvc += patch.fluxes.get_annual_flux(Fluxes::MORTHARVC, pft.id); //MORTC outputs - TP 13.11.15
+                standpft_mortc += patch.fluxes.get_annual_flux(Fluxes::MORTC, pft.id); //MORTC outputs - TP 13.11.15
+                standpft_mortdc += patch.fluxes.get_annual_flux(Fluxes::MORTDISTC, pft.id); //MORTC outputs - TP 13.11.15
+
+
 				standpft_clitter += patchpft.litter_leaf + patchpft.litter_root + patchpft.litter_sap + patchpft.litter_heart + patchpft.litter_repr;
 				standpft_nlitter += patchpft.nmass_litter_leaf + patchpft.nmass_litter_root + patchpft.nmass_litter_sap + patchpft.nmass_litter_heart;
 
@@ -1030,6 +1086,19 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 				standpft_vmaxnlim/=(double)stand.npatch();
 				standpft_heightindiv_total/=(double)stand.npatch();
 
+
+
+            standpft_mbclic/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
+            standpft_mnbioc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
+            standpft_malloc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
+            standpft_mfirec/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
+            standpft_mgrowc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
+            standpft_mminc/=(double)stand.npatch(); //MORTC outputs - TP 29.04.16
+            standpft_mharvc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
+            standpft_mortc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
+            standpft_mortdc/=(double)stand.npatch(); //MORTC outputs - TP 13.11.15
+
+
 				if (!negligible(standpft_cmass_leaf))
 					standpft_vmaxnlim /= standpft_cmass_leaf;
 
@@ -1080,6 +1149,18 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 					mean_standpft_amon_mt2 += standpft_amon_mt2 * stand.get_gridcell_fraction() / active_fraction;
 					mean_standpft_nuptake += standpft_nuptake * stand.get_gridcell_fraction() / active_fraction;
 					mean_standpft_vmaxnlim += standpft_vmaxnlim * stand.get_gridcell_fraction() / active_fraction;
+
+
+                    mean_standpft_mbclic+=standpft_mbclic * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
+                    mean_standpft_mnbioc+=standpft_mnbioc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
+                    mean_standpft_malloc+=standpft_malloc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
+                    mean_standpft_mfirec+=standpft_mfirec * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
+                    mean_standpft_mgrowc+=standpft_mgrowc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
+                    mean_standpft_mminc+=standpft_mminc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 29.04.16
+                    mean_standpft_mharvc+=standpft_mharvc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
+                    mean_standpft_mortc+=standpft_mortc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
+                    mean_standpft_mortdc+=standpft_mortdc * stand.get_gridcell_fraction() / active_fraction; //MORTC outputs - TP 13.11.15
+
 				}
 
 				//Update stand totals
@@ -1163,6 +1244,9 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 	} // *** End of PFT loop ***
 
 	flux_veg = flux_repr = flux_soil = flux_fire = flux_est = flux_seed = flux_charvest = 0.0;
+    flux_mortc = flux_mortdistc; //Adding MORTC and TURNC fluxes - TP 07.11.15
+    flux_mortbclic = flux_mortnbioc = flux_mortalloc = flux_mortfirec = flux_mortgrowc = flux_mortharvc = 0.0; //Adding MORTC fluxes - TP 06.05.15
+    flux_mortminc = 0.0; //TP 29.04.16
 
 	// guess2008 - carbon pools
 	c_fast = c_slow = c_harv_slow = 0.0;
@@ -1206,6 +1290,18 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 			flux_soil+=patch.fluxes.get_annual_flux(Fluxes::SOILC)*to_gridcell_average;
 			flux_fire+=patch.fluxes.get_annual_flux(Fluxes::FIREC)*to_gridcell_average;
 			flux_est+=patch.fluxes.get_annual_flux(Fluxes::ESTC)*to_gridcell_average;
+
+
+            flux_mortbclic+=patch.fluxes.get_annual_flux(Fluxes::MORTBCLIC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
+            flux_mortnbioc+=patch.fluxes.get_annual_flux(Fluxes::MORTNBIOC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
+            flux_mortalloc+=patch.fluxes.get_annual_flux(Fluxes::MORTALLOC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
+            flux_mortfirec+=patch.fluxes.get_annual_flux(Fluxes::MORTFIREC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
+            flux_mortgrowc+=patch.fluxes.get_annual_flux(Fluxes::MORTGROWC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
+            flux_mortminc+=patch.fluxes.get_annual_flux(Fluxes::MORTMINC)*to_gridcell_average; //Adding MORTC flux - TP 29.04.16
+            flux_mortharvc+=patch.fluxes.get_annual_flux(Fluxes::MORTHARVC)*to_gridcell_average; //Adding MORTC flux - TP 06.05.15
+            flux_mortc+=patch.fluxes.get_annual_flux(Fluxes::MORTC)*to_gridcell_average; //Adding MORTC flux - TP 09.02.15
+            flux_mortdistc+=patch.fluxes.get_annual_flux(Fluxes::MORTDISTC)*to_gridcell_average; //Adding MORTDISTC flux - TP 09.02.15
+
 			flux_seed+=patch.fluxes.get_annual_flux(Fluxes::SEEDC)*to_gridcell_average;
 			flux_charvest+=patch.fluxes.get_annual_flux(Fluxes::HARVESTC)*to_gridcell_average;
 
@@ -1592,6 +1688,19 @@ void CommonOutput::outannual(Gridcell& gridcell) {
 	outlimit(out,out_cflux, flux_soil + c_org_leach_gridcell);
 	outlimit(out,out_cflux, flux_fire);
 	outlimit(out,out_cflux, flux_est);
+
+
+    outlimit(out,out_cflux, flux_mortbclic); //Adding MORTC flux - TP 06.05.15
+    outlimit(out,out_cflux, flux_mortnbioc); //Adding MORTC flux - TP 06.05.15
+    outlimit(out,out_cflux, flux_mortalloc); //Adding MORTC flux - TP 06.05.15
+    outlimit(out,out_cflux, flux_mortfirec); //Adding MORTC flux - TP 06.05.15
+    outlimit(out,out_cflux, flux_mortgrowc); //Adding MORTC flux - TP 06.05.15
+    outlimit(out,out_cflux, flux_mortminc); //Adding MORTC flux - TP 29.04.16
+    outlimit(out,out_cflux, flux_mortharvc); //Adding MORTC flux - TP 06.05.15
+    outlimit(out,out_cflux, flux_mortc); //Adding MORTC flux - TP 09.02.15
+    outlimit(out,out_cflux, flux_mortdistc); //Adding MORTDISTC flux - TP 09.02.15
+
+
 	if (run_landcover) {
 			outlimit(out,out_cflux, flux_seed);
 			outlimit(out,out_cflux, flux_charvest);
