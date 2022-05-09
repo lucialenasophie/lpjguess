@@ -56,7 +56,6 @@ void OutputModuleContainer::init() {
 		fail("No output directory given in the .ins file!");
 	} else {
         outdir = (char*) outputdirectory;
-        std::cout << "Out dir is " << outdir.c_str();
     }
 
 	// Create the output channel

@@ -634,6 +634,7 @@ bool CFInput::load_data_from_files(double& lon, double& lat){
 		    (cf_relhum && !cf_relhum->load_data_for(landid)) ||
 		    (cf_wind && !cf_wind->load_data_for(landid))) {
 			dprintf("Failed to load data for (%d) from NetCDF files, skipping.\n", landid);
+            std::cout << "1. Block: This is lat, lon:" << rlat << ", " << rlon << "\n";
 			return false;
 		}
 	}
@@ -648,7 +649,10 @@ bool CFInput::load_data_from_files(double& lon, double& lat){
 		    (cf_specifichum && !cf_specifichum->load_data_for(rlon, rlat))||
 		    (cf_relhum && !cf_relhum->load_data_for(rlon, rlat))||
 		    (cf_wind && !cf_wind->load_data_for(rlon, rlat)) ) {
+
+
 			dprintf("Failed to load data for (%d, %d) from NetCDF files, skipping.\n", rlon, rlat);
+            std::cout << "2. Block: This is lat, lon:" << rlat << ", " << rlon << "\n";
 			return false;
 		}
 	}
