@@ -94,7 +94,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "guess::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-guess-Debug-a3601df72205f3c290c8.json",
+					"jsonFile" : "target-guess-Debug-2969702ed79642d2db9c.json",
 					"name" : "guess",
 					"projectIndex" : 0
 				}
@@ -104,8 +104,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/lucia/lpjguess/code/trunk/cmake-build-debug",
-		"source" : "/home/lucia/lpjguess/code/trunk"
+		"build" : "/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug",
+		"source" : "/home/lucia/02_Science/lpjguess/code/trunk"
 	},
 	"version" : 
 	{

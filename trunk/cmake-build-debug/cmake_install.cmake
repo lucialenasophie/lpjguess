@@ -1,4 +1,4 @@
-# Install script for directory: /home/lucia/lpjguess/code/trunk
+# Install script for directory: /home/lucia/02_Science/lpjguess/code/trunk
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -44,10 +44,10 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/lucia/lpjguess/code/trunk/cmake-build-debug/framework/cmake_install.cmake")
-  include("/home/lucia/lpjguess/code/trunk/cmake-build-debug/modules/cmake_install.cmake")
-  include("/home/lucia/lpjguess/code/trunk/cmake-build-debug/cru/cmake_install.cmake")
-  include("/home/lucia/lpjguess/code/trunk/cmake-build-debug/libraries/cmake_install.cmake")
+  include("/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/framework/cmake_install.cmake")
+  include("/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/modules/cmake_install.cmake")
+  include("/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/cru/cmake_install.cmake")
+  include("/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/libraries/cmake_install.cmake")
 
 endif()
 
@@ -59,5 +59,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/lucia/lpjguess/code/trunk/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

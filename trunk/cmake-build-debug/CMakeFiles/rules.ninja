@@ -42,7 +42,7 @@ rule CXX_EXECUTABLE_LINKER__guess_Debug
 # Rule for re-running cmake.
 
 rule RERUN_CMAKE
-  command = /home/lucia/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/213.6461.75/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/lucia/lpjguess/code/trunk -B/home/lucia/lpjguess/code/trunk/cmake-build-debug
+  command = /home/lucia/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/213.6461.75/bin/cmake/linux/bin/cmake --regenerate-during-build -S/home/lucia/02_Science/lpjguess/code/trunk -B/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug
   description = Re-running CMake...
   generator = 1
 

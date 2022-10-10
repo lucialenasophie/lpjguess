@@ -55,7 +55,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/lucia/lpjguess/code/trunk/cmake-build-debug"
+			"value" : "/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -579,7 +579,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "/home/lucia/lpjguess/code/trunk"
+			"value" : "/home/lucia/02_Science/lpjguess/code/trunk"
 		},
 		{
 			"name" : "CMAKE_INSTALL_PREFIX",
@@ -1635,7 +1635,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/lucia/lpjguess/code/trunk/cmake-build-debug"
+			"value" : "/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug"
 		},
 		{
 			"name" : "guess_IS_TOP_LEVEL",
@@ -1659,7 +1659,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "/home/lucia/lpjguess/code/trunk"
+			"value" : "/home/lucia/02_Science/lpjguess/code/trunk"
 		}
 	],
 	"kind" : "cache",
