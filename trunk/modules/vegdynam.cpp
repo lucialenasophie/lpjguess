@@ -633,7 +633,7 @@ void establishment_guess(Stand& stand,Patch& patch) {
 					else if (vegmode == INDIVIDUAL) {
 						newindiv=(int)(nsapling+0.5); // round up to be on the safe side
 					}
-
+                    // Idea: attach a variable to indiv.pdf that documents how many seedlings were created that year.
 					// Now create 'newindiv' new Individual objects
 
 					for (i=0;i<newindiv;i++) {
@@ -1561,12 +1561,13 @@ void vegetation_dynamics(Stand& stand,Patch& patch) {
 			bool during_century_solvesom = ifcentury &&
 										   date.year >= patch.soil.solvesomcent_beginyr &&
 										   date.year <= patch.soil.solvesomcent_endyr;
-
+            patch.disturbed = false;
 			if (patch.age && !during_century_solvesom && date.year != stand.clone_year) {
 				disturbance(patch,1.0 / distinterval);
 				if (patch.disturbed) {
 					return; // no mortality or establishment this year
 				}
+
 			}
 		}
 

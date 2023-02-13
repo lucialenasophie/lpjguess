@@ -94,27 +94,27 @@
 				},
 				{
 					"backtrace" : 6,
-					"path" : "/home/lucia/lpjguess/code/trunk/framework"
+					"path" : "/home/lucia/02_Science/lpjguess/code/trunk/framework"
 				},
 				{
 					"backtrace" : 6,
-					"path" : "/home/lucia/lpjguess/code/trunk/libraries/gutil"
+					"path" : "/home/lucia/02_Science/lpjguess/code/trunk/libraries/gutil"
 				},
 				{
 					"backtrace" : 6,
-					"path" : "/home/lucia/lpjguess/code/trunk/libraries/plib"
+					"path" : "/home/lucia/02_Science/lpjguess/code/trunk/libraries/plib"
 				},
 				{
 					"backtrace" : 6,
-					"path" : "/home/lucia/lpjguess/code/trunk/libraries/guessnc"
+					"path" : "/home/lucia/02_Science/lpjguess/code/trunk/libraries/guessnc"
 				},
 				{
 					"backtrace" : 6,
-					"path" : "/home/lucia/lpjguess/code/trunk/modules"
+					"path" : "/home/lucia/02_Science/lpjguess/code/trunk/modules"
 				},
 				{
 					"backtrace" : 6,
-					"path" : "/home/lucia/lpjguess/code/trunk/cru/guessio"
+					"path" : "/home/lucia/02_Science/lpjguess/code/trunk/cru/guessio"
 				}
 			],
 			"language" : "CXX",

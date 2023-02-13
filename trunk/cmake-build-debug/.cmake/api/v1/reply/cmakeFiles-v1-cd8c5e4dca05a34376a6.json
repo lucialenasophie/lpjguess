@@ -827,8 +827,8 @@
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "/home/lucia/lpjguess/code/trunk/cmake-build-debug",
-		"source" : "/home/lucia/lpjguess/code/trunk"
+		"build" : "/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug",
+		"source" : "/home/lucia/02_Science/lpjguess/code/trunk"
 	},
 	"version" : 
 	{
