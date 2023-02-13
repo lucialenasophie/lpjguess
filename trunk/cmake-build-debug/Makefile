@@ -57,10 +57,10 @@ RM = /home/lucia/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/213.6461.75/bin/
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/lucia/lpjguess/code/trunk
+CMAKE_SOURCE_DIR = /home/lucia/02_Science/lpjguess/code/trunk
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/lucia/lpjguess/code/trunk/cmake-build-debug
+CMAKE_BINARY_DIR = /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucia/lpjguess/code/trunk/cmake-build-debug/CMakeFiles /home/lucia/lpjguess/code/trunk/cmake-build-debug//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/CMakeFiles /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucia/lpjguess/code/trunk/cmake-build-debug/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
