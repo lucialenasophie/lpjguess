@@ -116,7 +116,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens NE dhist\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens NE dhist height\n");
             }
         }
     }
@@ -143,7 +143,9 @@ namespace GuessOutput {
             double patchpft_cmass{0};
             double patchpft_lai{0};
             double patchpft_dens{0};
-            double patchpft_seedling{0};
+            int patchpft_seedling{0};
+            double patchpft_height{0};
+            int number_cohorts{0};
 
             // *** Loop through PFTs ***
 
@@ -171,7 +173,9 @@ namespace GuessOutput {
                             patchpft_cmass = 0.0;
                             patchpft_dens = 0.0;
                             patchpft_lai = 0.0;
-                            patchpft_seedling = 0.0;
+                            patchpft_seedling = 0;
+                            patchpft_height = 0.0;
+                            number_cohorts = 0;
 
 
                             Patch& patch = stand.getobj();
@@ -189,18 +193,17 @@ namespace GuessOutput {
                                     if (indiv.pft.id==pft.id) {
                                         patchpft_cmass += indiv.ccont();
                                         patchpft_lai += indiv.lai;
-                                        for (m=0;m<12;m++) {
-                                            mlai[m] += indiv.mlai[m];
-                                        }
                                         if (pft.lifeform==TREE) {
                                             patchpft_dens += indiv.densindiv;
+                                            patchpft_height += indiv.height;
+                                            number_cohorts += 1;
                                         }
                                     }
                                 } // end check alive?
                                 vegetation.nextobj();
                             } // end of cohort loop
 
-
+                            patchpft_height = patchpft_height/ number_cohorts;
                             // Make sure to only write output if we have individuals of that PFT present.
                             if (patchpft_cmass > 0)
                             {
@@ -211,8 +214,9 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
-                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_seedling);
-                                fprintf(out_vegstruct_patch, " %i", patch.disturbed);
+                                fprintf(out_vegstruct_patch, " %i ", patchpft_seedling);
+                                fprintf(out_vegstruct_patch, " %i ", patch.disturbed);
+                                fprintf(out_vegstruct_patch, " %6.2f", patchpft_height);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
                             else if (patch.disturbed){ //Make sure disturbance years are printed out even tho biomass is zero
@@ -223,8 +227,9 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
-                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_seedling);
-                                fprintf(out_vegstruct_patch, " %i", patch.disturbed);
+                                fprintf(out_vegstruct_patch, " %i  ", patchpft_seedling);
+                                fprintf(out_vegstruct_patch, " %i ", patch.disturbed);
+                                fprintf(out_vegstruct_patch, " %6.2f", patchpft_height);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
 
