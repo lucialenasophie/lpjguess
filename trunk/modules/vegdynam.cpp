@@ -413,6 +413,7 @@ void establishment_guess(Stand& stand,Patch& patch) {
 	// Actual number of new saplings for PFT in this patch (may include a
 	// fractional part in cohort mode with stochastic establishment disabled)
 	double nsapling;
+    int exp_est;
 	double bminit; // initial sapling biomass (kgC) or new grass biomass (kgC/m2)
 	double ltor; // leaf to fine root mass ratio for new saplings or grass
 	int newindiv; // number of new Individual objects to add to vegetation for this PFT
@@ -580,8 +581,10 @@ void establishment_guess(Stand& stand,Patch& patch) {
 						// Spatial mass effect enabled?
 						// Eqns 2, 3, 4
 
-						if (ifsme)
+						if (ifsme) {
 							est=c*(pft.kest_repr*stand.pft[pft.id].cmass_repr+kest_bg);
+                            patch.pft[pft.id].exp_est = est;
+                        }
 						else if (!negligible(stand.pft[pft.id].cmass_repr))
 							est=c*(pft.kest_pres+kest_bg);
 						else
