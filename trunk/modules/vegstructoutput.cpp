@@ -116,7 +116,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens NE dhist height\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens NE dhist height exp_est\n");
             }
         }
     }
@@ -146,6 +146,7 @@ namespace GuessOutput {
             int patchpft_seedling{0};
             double patchpft_height{0};
             int number_cohorts{0};
+            int patchpft_expest{0};
 
             // *** Loop through PFTs ***
 
@@ -176,12 +177,14 @@ namespace GuessOutput {
                             patchpft_seedling = 0;
                             patchpft_height = 0.0;
                             number_cohorts = 0;
+                            patchpft_expest = 0;
 
 
                             Patch& patch = stand.getobj();
                             Patchpft& patchpft = patch.pft[pft.id];
                             Vegetation& vegetation = patch.vegetation;
                             patchpft_seedling = patch.pft[pft.id].nsapling;
+                            patchpft_expest = patch.pft[pft.id].exp_est;
 
                             //Loop through cohorts
                             vegetation.firstobj();
@@ -217,6 +220,7 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %i ", patchpft_seedling);
                                 fprintf(out_vegstruct_patch, " %i ", patch.disturbed);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_height);
+                                fprintf(out_vegstruct_patch, " %i ", patchpft_expest);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
                             else if (patch.disturbed){ //Make sure disturbance years are printed out even tho biomass is zero
@@ -230,6 +234,7 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %i  ", patchpft_seedling);
                                 fprintf(out_vegstruct_patch, " %i ", patch.disturbed);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_height);
+                                fprintf(out_vegstruct_patch, " %i ", patchpft_expest);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
 

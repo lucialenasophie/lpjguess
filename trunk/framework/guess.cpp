@@ -328,6 +328,7 @@ void Patchpft::serialize(ArchiveStream& arch) {
 		& aphen
 		& establish
 		& nsapling
+        & exp_est
 		& litter_leaf
 		& litter_root
 		& litter_sap

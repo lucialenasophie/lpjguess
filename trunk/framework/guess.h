@@ -3891,7 +3891,7 @@ public:
 
 	/// id code (equal to value of member variable id in corresponding Pft object)
 	int id;
-	/// reference to corresponding Pft object in PFT list
+    /// exspectated value of establishment
 	Pft& pft;
 	/// potential annual net assimilation (leaf-level net photosynthesis) at forest floor (kgC/m2/year)
 	double anetps_ff;
@@ -3916,6 +3916,8 @@ public:
 	bool establish;
 	/// running total for number of saplings of this PFT to establish (cohort mode)
 	double nsapling;
+    /// expected value of number of seedling in stochest
+    int exp_est;
 	/// leaf-derived litter for PFT on modelled area basis (kgC/m2)
 	double litter_leaf;
 	/// fine root-derived litter for PFT on modelled area basis (kgC/m2)
@@ -4001,6 +4003,7 @@ public:
 		anetps_ff_est_initial = 0.0;
 		wscal_mean_est = 0.0;
 		nsapling = 0;
+        exp_est = 0;
 
 		for(int i=0;i<NSOILLAYER;i++)
 			fwuptake[i]=0.0;
