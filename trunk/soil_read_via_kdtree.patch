@@ -1,0 +1,723 @@
+Index: cru/guessio/cruinput.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cru/guessio/cruinput.cpp b/cru/guessio/cruinput.cpp
+--- a/cru/guessio/cruinput.cpp	(revision 10326)
++++ b/cru/guessio/cruinput.cpp	(date 1639848651054)
+@@ -96,6 +96,7 @@
+ 	FILE* in_grid=fopen(file_gridlist,"r");
+ 	if (!in_grid) fail("initio: could not open %s for input",(char*)file_gridlist);
+ 
++    std::cout << "bye " << std::endl;
+ 	file_cru=param["file_cru"].str;
+ 	file_cru_misc=param["file_cru_misc"].str;
+ 
+@@ -127,9 +128,11 @@
+ 	co2.load_file(param["file_co2"].str);
+ 
+ 	// Open landcover files
+-	landcover_input.init();
++	landcover_input.init(gridlist);
+ 	// Open management files
+-	management_input.init();
++	management_input.init(gridlist);
++
++    //todo gridlist.killal()?
+ 
+ 	date.set_first_calendar_year(FIRSTHISTYEAR - nyear_spinup);
+ 
+Index: cru/guessio/cruinput.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/cru/guessio/cruinput.h b/cru/guessio/cruinput.h
+--- a/cru/guessio/cruinput.h	(revision 10326)
++++ b/cru/guessio/cruinput.h	(date 1639670653326)
+@@ -103,16 +103,6 @@
+ 	                                     double hist_msun[NYEAR_HIST][12]);
+ 
+ private:
+-
+-	/// Type for storing grid cell longitude, latitude and description text
+-	struct Coord {
+-
+-		int id;
+-		double lon;
+-		double lat;
+-		xtring descrip;
+-	};
+-
+ 	std::vector<std::pair<double, double> > translate_gridlist_to_coord(ListArray_id<Coord>& gridlist);
+ 
+ 	SoilInput soilinput;
+Index: framework/externalinput.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/framework/externalinput.cpp b/framework/externalinput.cpp
+--- a/framework/externalinput.cpp	(revision 10326)
++++ b/framework/externalinput.cpp	(date 1642712261339)
+@@ -5,6 +5,7 @@
+ /// $Date: $
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
++#include <iostream>
+ #include "externalinput.h"
+ 
+ void read_gridlist(ListArray_id<Coord>& gridlist, const char* file_gridlist) {
+@@ -51,13 +52,13 @@
+ 	declare_parameter("frac_fixed_default_crops", &frac_fixed_default_crops, " whether to use all active crop stand types (0) or only stand types with suitable rainfed crops (based on crop pft tb and gridcell latitude) (1) when using fixed crop fractions");
+ }
+ 
+-void LandcoverInput::init() {
++void LandcoverInput::init(ListArray_id<Coord>& gridlist) {
+ 
+ 	if(!run_landcover)
+ 		return;
+ 
+-	ListArray_id<Coord> gridlist;
+-	read_gridlist(gridlist, param["file_gridlist"].str);
++//	ListArray_id<Coord> gridlist;
++//	read_gridlist(gridlist, param["file_gridlist"].str);
+ 
+ 	all_fracs_const=true;	//If any of the opened files have yearly data, all_fracs_const will be set to false and landcover_dynamics will call get_landcover() each year
+ 
+@@ -241,7 +242,6 @@
+ 		}			
+ 	}
+ 
+-	gridlist.killall();
+ }
+ 
+ bool LandcoverInput::loadlandcover(double lon, double lat) {
+@@ -266,6 +266,7 @@
+ 
+ 		if (loadLU) {
+ 			// Load landcover area fraction data from input file to data object
++            std::cout << "Get LUdata for " << lon << ", " << lat << std::endl;
+ 			if (!LUdata.Load(c)) {
+ 				dprintf("Problems with landcover fractions input file. EXCLUDING STAND at %.3f,%.3f from simulation.\n",c.lon,c.lat);
+ 				LUerror = true;		// skip this stand
+@@ -1540,13 +1541,11 @@
+ ManagementInput::ManagementInput() {
+ }
+ 
+-void ManagementInput::init() {
++void ManagementInput::init(ListArray_id<Coord>& gridlist) {
+ 
+ 	if(!run_landcover)
+ 		return;
+ 
+-	ListArray_id<Coord> gridlist;
+-	read_gridlist(gridlist, param["file_gridlist"].str);
+ 
+ 	if(run[CROPLAND]) {
+ 
+@@ -1589,7 +1588,6 @@
+ 		}
+ 	}
+ 
+-	gridlist.killall();
+ }
+ 
+ bool ManagementInput::loadmanagement(double lon, double lat) {
+Index: framework/externalinput.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/framework/externalinput.h b/framework/externalinput.h
+--- a/framework/externalinput.h	(revision 10326)
++++ b/framework/externalinput.h	(date 1639729116955)
+@@ -27,7 +27,7 @@
+ 	LandcoverInput();
+ 
+ 	/// Opens land cover input files
+-	void init();
++    void init(ListArray_id<Coord>& gridlist);
+ 
+ 	/// Loads land cover and stand type area fractions from input files
+ 	bool loadlandcover(double lon, double lat);
+@@ -84,7 +84,7 @@
+ 	/// Constructor
+ 	ManagementInput();
+ 	/// Opens management data files
+-	void init();
++	void init(ListArray_id<Coord>& gridlist);
+ 	/// Loads fertilisation, sowing and harvest dates from input files
+ 	bool loadmanagement(double lon, double lat);
+ 	/// Gets management data for a year
+Index: framework/indata.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/framework/indata.cpp b/framework/indata.cpp
+--- a/framework/indata.cpp	(revision 10326)
++++ b/framework/indata.cpp	(date 1642712363114)
+@@ -8,6 +8,7 @@
+ /// $Date: $
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ 
++#include <iostream>
+ #include "indata.h"
+ #include "config.h"
+ #include "guess.h"
+@@ -1797,6 +1798,7 @@
+ 		loaded = false;
+ 	}
+ 	else {
++        std::cout << "Using LU data for " << gridlist[currentCell].lon << ", " << gridlist[currentCell].lat << std::endl;
+ 		loaded = true;
+ 	}
+ 	return loaded;
+Index: framework/indata.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/framework/indata.h b/framework/indata.h
+--- a/framework/indata.h	(revision 10326)
++++ b/framework/indata.h	(date 1639670898773)
+@@ -74,7 +74,7 @@
+ 	/// Pointer to data for one (current) gridcell
+ 	double *data;								//allocated in Allocate(), set in Load(), Load(Coord) or LoadNext()
+ 	/// Pointer to array with data years
+-	int *year;									//allocated in Allocate(), set in Load(), Load(Coord) or LoadNext()
++	int *year;									//allocated in Allocate(), set in Load(), Load(CfCoord) or LoadNext()
+ 	/// Pointer to array with indication whether data column contains values > 0 or not
+ 	bool *checkdata;							//allocated in CheckIfPresent()
+ 	/// Format of input data
+Index: modules/cfinput.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/cfinput.cpp b/modules/cfinput.cpp
+--- a/modules/cfinput.cpp	(revision 10326)
++++ b/modules/cfinput.cpp	(date 1640105899277)
+@@ -260,12 +260,12 @@
+ 
+ 	if (start1.get_year() != start2.get_year() ||
+ 		start1.get_month() != start2.get_month()) {
+-		fail(error_message.c_str());
++		fail("start");
+ 	}
+ 
+ 	if (end1.get_year() != end2.get_year() ||
+ 		end1.get_month() != end2.get_month()) {
+-		fail(error_message.c_str());
++		fail("end");
+ 	}
+ 
+ 	if (is_daily(var1) && is_daily(var2)) {
+@@ -339,7 +339,8 @@
+ 
+ 	// Declare instruction file parameters
+ 	declare_parameter("ndep_timeseries", &ndep_timeseries, 10, "Nitrogen deposition time series to use (historic, rcp26, rcp45, rcp60 or rcp85");
+-	 SoilInput soilinput;
++//todo this makes no sense here, does it?
++    //	 SoilInput soilinput;
+ }
+ 
+ CFInput::~CFInput() {
+@@ -457,7 +458,7 @@
+ 	std::ifstream ifs(file_gridlist, std::ifstream::in);
+ 
+ 	if (!ifs.good()) fail("CFInput::init: could not open %s for input",(char*)file_gridlist);
+-
++    ListArray_id<Coord> gridlist_for_lu;
+ 	std::string line;
+ 	while (getline(ifs, line)) {
+ 
+@@ -465,7 +466,7 @@
+ 		int rlat, rlon;
+ 		int landid;
+ 		std::string descrip;
+-		Coord c;
++        CfCoord c;
+ 
+ 		std::istringstream iss(line);
+ 
+@@ -473,8 +474,9 @@
+ 			if (iss >> landid) {
+ 				getline(iss, descrip);
+ 
+-				c.landid = landid;
+-			}
++				c.id = landid;
++                cf_temp->get_coords_for(landid, c.lon, c.lat);
++            }
+ 		}
+ 		else {
+ 			if (iss >> rlon >> rlat) {
+@@ -482,6 +484,7 @@
+ 
+ 				c.rlat = rlat;
+ 				c.rlon = rlon;
++                cf_temp->get_coords_for(rlon, rlat, c.lon, c.lat);
+ 
+ 			}
+ 			else {
+@@ -490,14 +493,21 @@
+ 		}
+ 		c.descrip = (xtring)trim(descrip).c_str();
+ 		gridlist.push_back(c);
++
++        Coord& c_lu = gridlist_for_lu.createobj();
++        c_lu.lat = c.lat;
++        c_lu.lon = c.lon;
++        // todo this is really error prone, since if it not set, the destructor will create a seg fault.
++        c_lu.descrip = (xtring)trim(descrip).c_str();
+ 	}
+ 
+ 	current_gridcell = gridlist.begin();
+ 
+ 	// Open landcover files
+-	landcover_input.init();
++    //todo probably should call killall() after this and not inside the method.
++	landcover_input.init(gridlist_for_lu);
+ 	// Open management files
+-	management_input.init();
++	management_input.init(gridlist_for_lu);
+ 
+ 	date.set_first_calendar_year(cf_temp->get_date_time(0).get_year() - nyear_spinup);
+ 
+@@ -510,6 +520,10 @@
+ 
+ 	tprogress.settimer();
+ 	tmute.settimer(MUTESEC);
++
++    ifs.close();
++    gridlist_for_lu.killall();
++
+ }
+ 
+ bool CFInput::getgridcell(Gridcell& gridcell) {
+@@ -605,9 +619,10 @@
+ 
+ 	dprintf("\nCommencing simulation for gridcell at (%g,%g)\n", lon, lat);
+ 	if (current_gridcell->descrip != "") {
+-		dprintf("Description: %s\n", current_gridcell->descrip.c_str());
++		dprintf("Description: %s\n", (char*)current_gridcell->descrip);
+ 	}
+-	dprintf("Using soil code and Nitrogen deposition for (%3.1f,%3.1f)\n", cru_lon, cru_lat);
++    // todo make the statement about soil where the soil is taken from really.
++	dprintf("Using Nitrogen deposition for (%3.3f,%3.3f)\n", cru_lon, cru_lat);
+ 
+ 	return true;
+ }
+@@ -616,7 +631,7 @@
+ 
+ 	int rlon = current_gridcell->rlon;
+ 	int rlat = current_gridcell->rlat;
+-	int landid = current_gridcell->landid;
++	int landid = current_gridcell->id;
+ 
+ 	// Try to load the data from the NetCDF files
+ 
+@@ -636,7 +651,7 @@
+ 		}
+ 	}
+ 	else {
+-		if (!cf_temp->load_data_for(rlon, rlat) ||
++        if (!cf_temp->load_data_for(rlon, rlat) ||
+ 		    !cf_prec->load_data_for(rlon, rlat) ||
+ 		    !cf_insol->load_data_for(rlon, rlat) ||
+ 		    (cf_wetdays && !cf_wetdays->load_data_for(rlon, rlat)) ||
+@@ -660,6 +675,7 @@
+ 		cf_temp->get_coords_for(rlon, rlat, lon, lat);
+ 	}
+ 
++    std::cout << "Successfully loaded climate data for indices " << rlon << ", " << rlat << ", corresponding to " << lon << ", " << lat << std::endl;
+ 	return true;
+ }
+ 
+Index: modules/cfinput.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/cfinput.h b/modules/cfinput.h
+--- a/modules/cfinput.h	(revision 10326)
++++ b/modules/cfinput.h	(date 1639670449254)
+@@ -48,23 +48,17 @@
+ 	ManagementInput management_input;
+ 	SoilInput soilinput;
+ 
+-	struct Coord {
+-
+-		// Type for storing grid cell longitude, latitude and description text
++	struct CfCoord : Coord{
+ 
+ 		int rlon;
+ 		int rlat;
+-		double lon;
+-		double lat;
+-		int landid;
+-		std::string descrip;
+ 	};
+ 
+ 	/// The grid cells to simulate
+-	std::vector<Coord> gridlist;
++	std::vector<CfCoord> gridlist;
+ 
+ 	/// The current grid cell to simulate
+-	std::vector<Coord>::iterator current_gridcell;
++	std::vector<CfCoord>::iterator current_gridcell;
+ 
+ 	/// Loads data from NetCDF files for current grid cell
+ 	/** Returns the coordinates for the current grid cell*/
+Index: modules/CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/CMakeLists.txt b/modules/CMakeLists.txt
+--- a/modules/CMakeLists.txt	(revision 10326)
++++ b/modules/CMakeLists.txt	(date 1638895284533)
+@@ -26,6 +26,7 @@
+   soil.h
+   soilinput.h
+   ntransform.h
++  kdtree.h
+   )
+ 
+ set(source  
+Index: modules/demoinput.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/demoinput.cpp b/modules/demoinput.cpp
+--- a/modules/demoinput.cpp	(revision 10326)
++++ b/modules/demoinput.cpp	(date 1639729116967)
+@@ -208,9 +208,11 @@
+ 	ndep=param["ndep"].num;
+ 
+ 	// Open landcover files
+-	landcover_input.init();
++	landcover_input.init(gridlist);
+ 	// Open management files
+-	management_input.init();
++	management_input.init(gridlist);
++
++    //todo gridlist.killall()?
+ 
+ 	// Retrieve input file names as read from ins file
+ 
+Index: modules/demoinput.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/demoinput.h b/modules/demoinput.h
+--- a/modules/demoinput.h	(revision 10326)
++++ b/modules/demoinput.h	(date 1639665767326)
+@@ -53,15 +53,6 @@
+ 
+ private:
+ 
+-	/// Type for storing grid cell longitude, latitude and description text
+-	struct Coord {
+-
+-		int id;
+-		double lon;
+-		double lat;
+-		xtring descrip;
+-	};
+-
+ 	/// Land cover input module
+ 	LandcoverInput landcover_input;
+ 	/// Management input module
+Index: modules/miscoutput.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/miscoutput.cpp b/modules/miscoutput.cpp
+--- a/modules/miscoutput.cpp	(revision 10326)
++++ b/modules/miscoutput.cpp	(date 1640193196483)
+@@ -244,6 +244,8 @@
+ 	seasonality_columns += ColumnDescriptor("prec_min",   10, 2);
+ 	seasonality_columns += ColumnDescriptor("prec",       10, 1);
+ 	seasonality_columns += ColumnDescriptor("prec_range", 12, 0);
++	seasonality_columns += ColumnDescriptor("co2", 12, 0);
++	seasonality_columns += ColumnDescriptor("rad", 12, 0);
+ 
+ 	// NPOOL
+ 	ColumnDescriptors npool_columns;
+@@ -1095,6 +1097,8 @@
+ 	outlimit_misc(out, out_seasonality,   gridcell.climate.mprec_petmin20);
+ 	outlimit_misc(out, out_seasonality,   gridcell.climate.aprec);
+ 	outlimit_misc(out, out_seasonality,   gridcell.climate.prec_range);
++	outlimit_misc(out, out_seasonality,   gridcell.climate.co2);
++	outlimit_misc(out, out_seasonality,   gridcell.climate.rad);
+ }
+ 
+ /// Output of simulation results at the end of each day
+Index: modules/soilinput.cpp
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/soilinput.cpp b/modules/soilinput.cpp
+--- a/modules/soilinput.cpp	(revision 10326)
++++ b/modules/soilinput.cpp	(date 1639728311545)
+@@ -13,6 +13,7 @@
+ #include "soilinput.h"
+ #include <fstream>
+ #include <sstream>
++#include <list>
+ 
+ 
+ namespace {
+@@ -100,10 +101,28 @@
+ 		}
+ 	}
+ 
+-	fail("Coordinate at %f, %f could not be found in the soil map.\n",lon,lat);
++	fail("Coordinate at %f, %f could not be found in the soil map. Searchradius=%f, searchradius_soil=%f\n",lon,lat, searchradius, searchradius_soil);
+ 	return C;
+ }
+ 
++
++coord SoilInput::find_closest_point_using_kd_tree(double searchradius, coord C) const {
++    point<double, 2> closest_soil_data = soil_data_tree->nearest({C.first, C.second});
++
++    double distance_to_soil_point = closest_soil_data.distance({C.first, C.second});
++
++    dprintf("Using mineral soil data from %.3f, %.3f (distance %.3f, soil search radius %.3f)", closest_soil_data.get(0), closest_soil_data.get(1), distance_to_soil_point, searchradius);
++
++    if(distance_to_soil_point < searchradius){
++        return std::make_pair(closest_soil_data.get(0), closest_soil_data.get(1));
++    } else {
++        throw std::invalid_argument("Error! No soil data found.\n");
++        //todo catch this and call fail().
++        //        fail("no soil data found close enough!");
++    }
++
++}
++
+ // Initialises the soil input class and determines the format of the supplied input file.
+ void SoilInput::init(const char* fname, const std::vector<coord>& gridlist) {
+ 
+@@ -150,8 +169,18 @@
+ 
+ // Load mineral soil data from text file with columns describing the data. They need to be named:
+ // lon, lat, sand, silt, clay, orgc, bulkdensity, ph, soilc, cn.
++// the fractions of sand, silt, and clay need to be specified as a decimal in [0; 1]
+ void SoilInput::load_mineral_soils(const char* fname, const std::set<coord>& coords) {
+-	std::ifstream ifs(fname, std::ifstream::in);
++    std::ifstream ifs(fname, std::ifstream::in);
++    try{
++        load_mineral_soils(ifs);
++    } catch(std::exception& e) {
++        fail("Error! Could not read soil file %s.\nReason: %s\n", fname, e.what());
++    }
++    ifs.close();
++}
++
++void SoilInput::load_mineral_soils(std::istream &ifs) {
+ 
+ 	std::string line;
+ 
+@@ -196,7 +225,7 @@
+ 		}
+ 		else if (*it == "bulkdensity") {
+ 			bd_i = i;
+-		}	
++		}
+ 		else if (*it == "cn") {
+ 			cn_i = i;
+ 		}
+@@ -205,28 +234,32 @@
+ 		}
+ 	}
+ 	if (soilc_i == -1 && iforganicsoilproperties) {
+-		fail("Error! No Soil C column found in %s. \nTip: do not use iforganicsoilproperties 1 together with a soilmap file without a SoilC column\n", fname);
++        throw std::invalid_argument("Error! No Soil C column found in mineral soil input file.\nTip: do not use iforganicsoilproperties 1 together with a soilmap file without a SoilC column\n");
+ 	}
+ 
+ 	// Create a empty vector T with header.size-2 elements
+ 	std::vector<double> T((unsigned int)header.size() - 2);
+ 
+-	while (getline(ifs, line)) {
++    std::list<point<double, 2>> available_soil_data_points;
++
++    while (getline(ifs, line)) {
+ 
+ 		std::istringstream iss(line);
+ 		double lon, lat;
+ 		if (iss >> lon >> lat) {	// Get lon and lat from current line.
+ 			coord c(lon, lat);
+ 
+-			if (!coords.empty() && coords.count(c) == 0) {
+-				continue;
+-			}
++//			if (!coords.empty() && coords.count(c) == 0) {
++//				continue;
++//			}
+ 
+ 			for (std::vector<double>::iterator it = T.begin(); it != T.end(); ++it) {
+ 				// Add the next values from the line to T
+ 				iss >> *it;
+ 			}
+ 
++            available_soil_data_points.push_back({lon, lat});
++
+ 			SoilDataMineral& soildata = mineral_map[c];
+ 			soildata.sand = T[sand_i];
+ 			soildata.clay = T[clay_i];
+@@ -239,28 +272,28 @@
+ 			else {
+ 				soildata.soilC = 0.0;
+ 			}
+-				
+-			// Not all data sets includes bulk density data, here it is set to a negative number if no column with that name. 
++
++			// Not all data sets includes bulk density data, here it is set to a negative number if no column with that name.
+ 			// TODO, set it to value: 1.6
+-			if (bd_i<0) {	
++			if (bd_i<0) {
+ 				soildata.bulkdensity = (double)bd_i;
+-			} 
++			}
+ 			else {
+ 				soildata.bulkdensity = T[bd_i];
+ 			}
+ 
+-			if (mineral_map.size() == coords.size()) {
+-				break;
+-			}
++//			if (mineral_map.size() == coords.size()) {
++//				break;
++//			}
+ 		}
+ 	}
+ 
+-	ifs.close();
++    soil_data_tree = new kdtree<double, 2>(std::begin(available_soil_data_points),std::end(available_soil_data_points));
+ }
+ 
+ // Get and set soil properties based on LPJ soil code.
+ SoilInput::SoilProperties SoilInput::get_lpj(coord c) {
+-
++    std::cout << " get lpj " << std::endl;
+ 	coord C = find_closest_point(searchradius_soil, c);
+ 
+ 	int soilcode = lpj_map[C];
+@@ -309,10 +342,14 @@
+ 
+ // Get and set soil properties based on mineral soil input.
+ SoilInput::SoilProperties SoilInput::get_mineral(coord c) {
+-	coord C = find_closest_point(searchradius_soil, c);
++	coord C = find_closest_point_using_kd_tree(searchradius_soil, c);
+ 	SoilDataMineral& soil = mineral_map[C];
+ 	double silt = 1.0 - soil.sand - soil.clay;
+ 
++    if(!(silt >= 0 && silt <= 1)){
++        throw std::invalid_argument("Silt fraction could not be computed from mineral soil file. Are the values in the file between 0 and 1?");
++    }
++
+ 	// Equation 1 from Cosby 1984
+ 	// Psi = Psi_s * (Theta/Theta_s)^b
+ 	// Psi is the pressure head in cm
+Index: modules/soilinput.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/modules/soilinput.h b/modules/soilinput.h
+--- a/modules/soilinput.h	(revision 10326)
++++ b/modules/soilinput.h	(date 1639672932204)
+@@ -18,6 +18,8 @@
+ #include <vector>
+ #include <map>
+ #include <set>
++#include <iostream>
++#include "kdtree.h"
+ 
+ typedef std::pair<double, double> coord;
+ 
+@@ -45,17 +47,23 @@
+ 	
+ 	double STEP;
+ 
++    //TODO is there package private, too?
++    coord find_closest_point(double searchradius, coord C);
++    void load_mineral_soils(std::istream &ifs);
++    bool soil_code;
++    coord find_closest_point_using_kd_tree(double searchradius, coord C) const;
++
++    //todo do I need to do something in the destructor?
++    kdtree<double, 2>* soil_data_tree = nullptr;
++
+ private:
+ 	void get_soil_mineral(double lon, double lat, Gridcell& gridcell);
+ 
+ 	void get_soil_organic(double lon, double lat, Gridcell& gridcell);
+ 
+-	bool soil_code;
+ 	
+ 	double searchradius_soil;
+ 
+-	coord find_closest_point(double searchradius, coord C);
+-
+ 	struct SoilProperties {
+ 
+ 		// empirical parameter in percolation equation (k1) (mm/day)
+Index: tests/CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+--- a/tests/CMakeLists.txt	(revision 10326)
++++ b/tests/CMakeLists.txt	(date 1638895295353)
+@@ -12,6 +12,8 @@
+   string_test.cpp
+   guesscontainer_test.cpp
+   management_test.cpp
++  kdtree_test.cpp
++  soilinput_test.cpp
+   )
+ 
+ include(add_test_sources)
+Index: CMakeLists.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+--- a/CMakeLists.txt	(revision 10326)
++++ b/CMakeLists.txt	(date 1642712261319)
+@@ -96,6 +96,7 @@
+   add_subdirectory(windows_version)
+ endif()
+ 
++add_subdirectory(tests)
+ 
+ # Add the command line program's target
+ if (WIN32)
+@@ -110,7 +111,6 @@
+ add_executable(${guess_command_name} ${guess_sources} command_line_version/main.cpp)
+ 
+ # Rule for building the unit test binary
+-add_subdirectory(tests)
+ add_executable(runtests ${guess_sources} ${test_sources})
+ target_link_libraries(runtests ${LIBS})
+ 
+@@ -146,7 +146,7 @@
+ 
+ # Rule for running unit tests automatically
+ if (UNIT_TESTS)
+-  add_custom_command(TARGET runtests 
++  add_custom_command(TARGET runtests
+     POST_BUILD 
+     COMMAND runtests 
+     COMMENT "Running tests")

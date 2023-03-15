@@ -12,7 +12,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="46837882-7b1e-4b32-8178-190b7fc95371" name="Changes" comment="" />
+    <list default="true" id="46837882-7b1e-4b32-8178-190b7fc95371" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <list id="6072e095-fa50-4d8a-876c-4926c254d2ca" name="HWSD_input_module" comment="HWSD_input_module" />
     <list id="f386ab59-e5bf-4359-94b3-8c8493edc154" name="vecstruct_patch" comment="implemented patch provided by CZ/BM/Joerg Steinkamp" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +58,7 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/vegstruc-output.patch" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/soil_read_via_kdtree.patch" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -63,9 +66,9 @@
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
   <component name="RunManager">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
   </component>
@@ -74,6 +77,7 @@
     <task active="true" id="Default" summary="Default task">
       <changelist id="46837882-7b1e-4b32-8178-190b7fc95371" name="Changes" comment="" />
       <changelist id="f386ab59-e5bf-4359-94b3-8c8493edc154" name="vecstruct_patch" comment="implemented patch provided by CZ/BM/Joerg Steinkamp" />
+      <changelist id="6072e095-fa50-4d8a-876c-4926c254d2ca" name="HWSD_input_module" comment="" />
       <created>1643118074954</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
@@ -96,6 +100,7 @@
       <workItem from="1644513702677" duration="628000" />
       <workItem from="1644570074452" duration="2238000" />
       <workItem from="1645793364875" duration="3270000" />
+      <workItem from="1678703374627" duration="1166000" />
     </task>
     <servers />
   </component>
