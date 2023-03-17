@@ -1,4 +1,4 @@
-# Install script for directory: /home/lucia/lpjguess/code/trunk/cru
+# Install script for directory: /home/lucia/02_Science/lpjguess/code/trunk/cru
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

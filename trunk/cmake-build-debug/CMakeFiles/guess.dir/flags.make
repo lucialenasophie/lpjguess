@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DHAVE_MPI -DHAVE_NETCDF
 
-CXX_INCLUDES = -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/home/lucia/lpjguess/code/trunk/framework -I/home/lucia/lpjguess/code/trunk/libraries/gutil -I/home/lucia/lpjguess/code/trunk/libraries/plib -I/home/lucia/lpjguess/code/trunk/libraries/guessnc -I/home/lucia/lpjguess/code/trunk/modules -I/home/lucia/lpjguess/code/trunk/cru/guessio
+CXX_INCLUDES = -I/usr/lib/x86_64-linux-gnu/openmpi/include/openmpi -I/usr/lib/x86_64-linux-gnu/openmpi/include -I/home/lucia/02_Science/lpjguess/code/trunk/framework -I/home/lucia/02_Science/lpjguess/code/trunk/libraries/gutil -I/home/lucia/02_Science/lpjguess/code/trunk/libraries/plib -I/home/lucia/02_Science/lpjguess/code/trunk/libraries/guessnc -I/home/lucia/02_Science/lpjguess/code/trunk/modules -I/home/lucia/02_Science/lpjguess/code/trunk/cru/guessio
 
 CXX_FLAGS =  -pthread -g
 

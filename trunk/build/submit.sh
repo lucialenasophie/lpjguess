@@ -3,10 +3,10 @@
 # submit.sh
 #
 # Portable bash script to run LPJ-GUESS version:
-# /home/lucia/lpjguess/code/trunk/build/guess
+# /home/lucia/02_Science/lpjguess/code/trunk/build/guess
 # as a parallel job using SLURM on Simba2. Based on Aurora.tmpl.
 #
-# Created automatically on Mo 9. Mai 09:48:40 CEST 2022
+# Created automatically on Mi 15. Mär 14:55:38 CET 2023
 # 
 # Usage: 
 #
@@ -160,7 +160,7 @@ do
   cd ..
 done
 
-mpirun --bind-to core /home/lucia/lpjguess/code/trunk/build/guess -parallel -input $INPUT_MODULE $INSFILE
+mpirun --bind-to core /home/lucia/02_Science/lpjguess/code/trunk/build/guess -parallel -input $INPUT_MODULE $INSFILE
 
 EOF
 
