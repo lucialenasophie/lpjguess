@@ -8,6 +8,7 @@
 /// $Date: $
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include "indata.h"
 #include "config.h"
 #include "guess.h"
@@ -1797,6 +1798,7 @@ bool TimeDataDmem::Load(Coord c) {
 		loaded = false;
 	}
 	else {
+        std::cout << "Using LU data for " << gridlist[currentCell].lon << ", " << gridlist[currentCell].lat << std::endl;
 		loaded = true;
 	}
 	return loaded;

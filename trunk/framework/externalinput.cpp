@@ -5,6 +5,7 @@
 /// $Date: $
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <iostream>
 #include "externalinput.h"
 
 void read_gridlist(ListArray_id<Coord>& gridlist, const char* file_gridlist) {
@@ -51,13 +52,13 @@ LandcoverInput::LandcoverInput()
 	declare_parameter("frac_fixed_default_crops", &frac_fixed_default_crops, " whether to use all active crop stand types (0) or only stand types with suitable rainfed crops (based on crop pft tb and gridcell latitude) (1) when using fixed crop fractions");
 }
 
-void LandcoverInput::init() {
+void LandcoverInput::init(ListArray_id<Coord>& gridlist) {
 
 	if(!run_landcover)
 		return;
 
-	ListArray_id<Coord> gridlist;
-	read_gridlist(gridlist, param["file_gridlist"].str);
+//	ListArray_id<Coord> gridlist;
+//	read_gridlist(gridlist, param["file_gridlist"].str);
 
 	all_fracs_const=true;	//If any of the opened files have yearly data, all_fracs_const will be set to false and landcover_dynamics will call get_landcover() each year
 
@@ -241,7 +242,6 @@ void LandcoverInput::init() {
 		}			
 	}
 
-	gridlist.killall();
 }
 
 bool LandcoverInput::loadlandcover(double lon, double lat) {
@@ -266,6 +266,7 @@ bool LandcoverInput::loadlandcover(double lon, double lat) {
 
 		if (loadLU) {
 			// Load landcover area fraction data from input file to data object
+            std::cout << "Get LUdata for " << lon << ", " << lat << std::endl;
 			if (!LUdata.Load(c)) {
 				dprintf("Problems with landcover fractions input file. EXCLUDING STAND at %.3f,%.3f from simulation.\n",c.lon,c.lat);
 				LUerror = true;		// skip this stand
@@ -1540,13 +1541,11 @@ int LandcoverInput::getfirsthistyear() {
 ManagementInput::ManagementInput() {
 }
 
-void ManagementInput::init() {
+void ManagementInput::init(ListArray_id<Coord>& gridlist) {
 
 	if(!run_landcover)
 		return;
 
-	ListArray_id<Coord> gridlist;
-	read_gridlist(gridlist, param["file_gridlist"].str);
 
 	if(run[CROPLAND]) {
 
@@ -1589,7 +1588,6 @@ void ManagementInput::init() {
 		}
 	}
 
-	gridlist.killall();
 }
 
 bool ManagementInput::loadmanagement(double lon, double lat) {

@@ -53,15 +53,6 @@ public:
 
 private:
 
-	/// Type for storing grid cell longitude, latitude and description text
-	struct Coord {
-
-		int id;
-		double lon;
-		double lat;
-		xtring descrip;
-	};
-
 	/// Land cover input module
 	LandcoverInput landcover_input;
 	/// Management input module

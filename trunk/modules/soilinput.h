@@ -18,6 +18,8 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <iostream>
+#include "kdtree.h"
 
 typedef std::pair<double, double> coord;
 
@@ -45,16 +47,22 @@ public:
 	
 	double STEP;
 
+    //TODO is there package private, too?
+    coord find_closest_point(double searchradius, coord C);
+    void load_mineral_soils(std::istream &ifs);
+    bool soil_code;
+    coord find_closest_point_using_kd_tree(double searchradius, coord C) const;
+
+    //todo do I need to do something in the destructor?
+    kdtree<double, 2>* soil_data_tree = nullptr;
+
 private:
 	void get_soil_mineral(double lon, double lat, Gridcell& gridcell);
 
 	void get_soil_organic(double lon, double lat, Gridcell& gridcell);
 
-	bool soil_code;
 	
 	double searchradius_soil;
-
-	coord find_closest_point(double searchradius, coord C);
 
 	struct SoilProperties {
 

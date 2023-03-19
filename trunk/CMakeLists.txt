@@ -31,6 +31,7 @@ if (UNIX)
   # Setup the SYSTEM variable, currently only used to choose which 
   # submit.sh to generate (for submitting to job queue)
 
+add_subdirectory(tests)
 
   # Figure out what value it should have initially, based on the
   # environment variable ARCH if it's set.
@@ -113,10 +114,10 @@ endif()
 add_executable(${guess_command_name} ${guess_sources} command_line_version/main.cpp)
 
 # Rule for building the unit test binary
-if (UNIT_TESTS)
-  add_executable(runtests ${guess_sources} ${test_sources})
-  target_link_libraries(runtests ${LIBS})
-endif()
+#if (UNIT_TESTS)
+#  add_executable(runtests ${guess_sources} ${test_sources})
+#  target_link_libraries(runtests ${LIBS})
+#endif()
 
 # Specify libraries to link to the executable
 target_link_libraries(${guess_command_name} ${LIBS})
@@ -150,7 +151,7 @@ endif (UNIX)
 
 # Rule for running unit tests automatically
 if (UNIT_TESTS)
-  add_custom_command(TARGET runtests 
+  add_custom_command(TARGET runtests
     POST_BUILD 
     COMMAND runtests 
     COMMENT "Running tests")

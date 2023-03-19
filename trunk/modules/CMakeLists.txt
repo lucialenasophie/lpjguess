@@ -26,6 +26,7 @@ set(headers
   soil.h
   soilinput.h
   ntransform.h
+  kdtree.h
   )
 
 set(source  

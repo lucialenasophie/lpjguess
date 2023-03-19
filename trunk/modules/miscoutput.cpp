@@ -244,6 +244,8 @@ void MiscOutput::define_output_tables() {
 	seasonality_columns += ColumnDescriptor("prec_min",   10, 2);
 	seasonality_columns += ColumnDescriptor("prec",       10, 1);
 	seasonality_columns += ColumnDescriptor("prec_range", 12, 0);
+	seasonality_columns += ColumnDescriptor("co2", 12, 0);
+	seasonality_columns += ColumnDescriptor("rad", 12, 0);
 
 	// NPOOL
 	ColumnDescriptors npool_columns;
@@ -1095,6 +1097,8 @@ void MiscOutput::outannual(Gridcell& gridcell) {
 	outlimit_misc(out, out_seasonality,   gridcell.climate.mprec_petmin20);
 	outlimit_misc(out, out_seasonality,   gridcell.climate.aprec);
 	outlimit_misc(out, out_seasonality,   gridcell.climate.prec_range);
+	outlimit_misc(out, out_seasonality,   gridcell.climate.co2);
+	outlimit_misc(out, out_seasonality,   gridcell.climate.rad);
 }
 
 /// Output of simulation results at the end of each day

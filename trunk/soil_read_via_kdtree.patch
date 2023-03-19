@@ -682,7 +682,6 @@ diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
 @@ -12,6 +12,8 @@
    string_test.cpp
    guesscontainer_test.cpp
-   management_test.cpp
 +  kdtree_test.cpp
 +  soilinput_test.cpp
    )
@@ -708,9 +707,9 @@ diff --git a/CMakeLists.txt b/CMakeLists.txt
  add_executable(${guess_command_name} ${guess_sources} command_line_version/main.cpp)
  
  # Rule for building the unit test binary
--add_subdirectory(tests)
- add_executable(runtests ${guess_sources} ${test_sources})
- target_link_libraries(runtests ${LIBS})
+ #if (UNIT_TESTS)
+#-add_executable(runtests ${guess_sources} ${test_sources})
+# target_link_libraries(runtests ${LIBS})
  
 @@ -146,7 +146,7 @@
  
