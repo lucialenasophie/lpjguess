@@ -103,16 +103,6 @@ protected:
 	                                     double hist_msun[NYEAR_HIST][12]);
 
 private:
-
-	/// Type for storing grid cell longitude, latitude and description text
-	struct Coord {
-
-		int id;
-		double lon;
-		double lat;
-		xtring descrip;
-	};
-
 	std::vector<std::pair<double, double> > translate_gridlist_to_coord(ListArray_id<Coord>& gridlist);
 
 	SoilInput soilinput;

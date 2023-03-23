@@ -11,6 +11,8 @@ set(source
   cftime_test.cpp
   string_test.cpp
   guesscontainer_test.cpp
+  kdtree_test.cpp
+  soilinput_test.cpp
   )
 
-include(add_test_sources)
+#include(add_test_sources)

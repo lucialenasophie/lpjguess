@@ -48,23 +48,17 @@ private:
 	ManagementInput management_input;
 	SoilInput soilinput;
 
-	struct Coord {
-
-		// Type for storing grid cell longitude, latitude and description text
+	struct CfCoord : Coord{
 
 		int rlon;
 		int rlat;
-		double lon;
-		double lat;
-		int landid;
-		std::string descrip;
 	};
 
 	/// The grid cells to simulate
-	std::vector<Coord> gridlist;
+	std::vector<CfCoord> gridlist;
 
 	/// The current grid cell to simulate
-	std::vector<Coord>::iterator current_gridcell;
+	std::vector<CfCoord>::iterator current_gridcell;
 
 	/// Loads data from NetCDF files for current grid cell
 	/** Returns the coordinates for the current grid cell*/

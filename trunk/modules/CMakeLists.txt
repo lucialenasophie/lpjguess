@@ -27,6 +27,7 @@ set(headers
   soilinput.h
   ntransform.h
   vegstructoutput.h
+  kdtree.h
   )
 
 set(source  

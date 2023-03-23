@@ -74,7 +74,7 @@ class TimeDataD	{
 	/// Pointer to data for one (current) gridcell
 	double *data;								//allocated in Allocate(), set in Load(), Load(Coord) or LoadNext()
 	/// Pointer to array with data years
-	int *year;									//allocated in Allocate(), set in Load(), Load(Coord) or LoadNext()
+	int *year;									//allocated in Allocate(), set in Load(), Load(CfCoord) or LoadNext()
 	/// Pointer to array with indication whether data column contains values > 0 or not
 	bool *checkdata;							//allocated in CheckIfPresent()
 	/// Format of input data

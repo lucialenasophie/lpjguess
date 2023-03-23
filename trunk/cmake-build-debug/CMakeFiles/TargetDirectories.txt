@@ -1,6 +1,8 @@
 /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/CMakeFiles/rebuild_cache.dir
 /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/CMakeFiles/edit_cache.dir
 /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/CMakeFiles/guess.dir
+/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/tests/CMakeFiles/rebuild_cache.dir
+/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/tests/CMakeFiles/edit_cache.dir
 /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/framework/CMakeFiles/rebuild_cache.dir
 /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/framework/CMakeFiles/edit_cache.dir
 /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/modules/CMakeFiles/rebuild_cache.dir

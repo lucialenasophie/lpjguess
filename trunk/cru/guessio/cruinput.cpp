@@ -96,6 +96,7 @@ void CRUInput::init() {
 	FILE* in_grid=fopen(file_gridlist,"r");
 	if (!in_grid) fail("initio: could not open %s for input",(char*)file_gridlist);
 
+    std::cout << "bye " << std::endl;
 	file_cru=param["file_cru"].str;
 	file_cru_misc=param["file_cru_misc"].str;
 
@@ -127,9 +128,11 @@ void CRUInput::init() {
 	co2.load_file(param["file_co2"].str);
 
 	// Open landcover files
-	landcover_input.init();
+	landcover_input.init(gridlist);
 	// Open management files
-	management_input.init();
+	management_input.init(gridlist);
+
+    //todo gridlist.killal()?
 
 	date.set_first_calendar_year(FIRSTHISTYEAR - nyear_spinup);
 

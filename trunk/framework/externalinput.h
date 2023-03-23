@@ -27,7 +27,7 @@ public:
 	LandcoverInput();
 
 	/// Opens land cover input files
-	void init();
+    void init(ListArray_id<Coord>& gridlist);
 
 	/// Loads land cover and stand type area fractions from input files
 	bool loadlandcover(double lon, double lat);
@@ -84,7 +84,7 @@ public:
 	/// Constructor
 	ManagementInput();
 	/// Opens management data files
-	void init();
+	void init(ListArray_id<Coord>& gridlist);
 	/// Loads fertilisation, sowing and harvest dates from input files
 	bool loadmanagement(double lon, double lat);
 	/// Gets management data for a year
