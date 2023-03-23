@@ -14,30 +14,11 @@
   <component name="ChangeListManager">
     <list default="true" id="46837882-7b1e-4b32-8178-190b7fc95371" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/guess" beforeDir="false" afterPath="$PROJECT_DIR$/build/guess" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/submit.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build/submit.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/soil_read_via_kdtree.patch" beforeDir="false" afterPath="$PROJECT_DIR$/soil_read_via_kdtree.patch" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CMakeLists.txt" afterDir="false" />
-    </list>
-    <list id="6072e095-fa50-4d8a-876c-4926c254d2ca" name="HWSD_input_module" comment="Patch from Konni (03/23) to read in harmonized world soil database">
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cru/guessio/cruinput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/cru/guessio/cruinput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/cru/guessio/cruinput.h" beforeDir="false" afterPath="$PROJECT_DIR$/cru/guessio/cruinput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/externalinput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/framework/externalinput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/externalinput.h" beforeDir="false" afterPath="$PROJECT_DIR$/framework/externalinput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/indata.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/framework/indata.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/indata.h" beforeDir="false" afterPath="$PROJECT_DIR$/framework/indata.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/modules/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/cfinput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/modules/cfinput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/cfinput.h" beforeDir="false" afterPath="$PROJECT_DIR$/modules/cfinput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/demoinput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/modules/demoinput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/demoinput.h" beforeDir="false" afterPath="$PROJECT_DIR$/modules/demoinput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/miscoutput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/modules/miscoutput.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/soilinput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/modules/soilinput.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/soilinput.h" beforeDir="false" afterPath="$PROJECT_DIR$/modules/soilinput.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/tests/CMakeLists.txt" afterDir="false" />
     </list>
+    <list id="6072e095-fa50-4d8a-876c-4926c254d2ca" name="HWSD_input_module" comment="Patch from Konni (03/23) to read in harmonized world soil database" />
     <list id="f386ab59-e5bf-4359-94b3-8c8493edc154" name="vecstruct_patch" comment="implemented patch provided by CZ/BM/Joerg Steinkamp" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,21 +38,6 @@
       <filtered-out-file-type name="TAG" />
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
-  </component>
-  <component name="LineStatusTrackerManager">
-    <file path="$PROJECT_DIR$/CMakeLists.txt">
-      <ranges>
-        <range start1="33" end1="33" start2="33" end2="34" changelist="6072e095-fa50-4d8a-876c-4926c254d2ca" />
-        <range start1="115" end1="119" start2="116" end2="120" changelist="46837882-7b1e-4b32-8178-190b7fc95371" />
-        <range start1="152" end1="153" start2="153" end2="154" changelist="6072e095-fa50-4d8a-876c-4926c254d2ca" />
-      </ranges>
-    </file>
-    <file path="$PROJECT_DIR$/tests/CMakeLists.txt">
-      <ranges>
-        <range start1="13" end1="13" start2="13" end2="15" changelist="6072e095-fa50-4d8a-876c-4926c254d2ca" />
-        <range start1="15" end1="16" start2="17" end2="18" changelist="46837882-7b1e-4b32-8178-190b7fc95371" />
-      </ranges>
-    </file>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -101,6 +67,13 @@
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
