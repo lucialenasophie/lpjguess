@@ -1,0 +1,11 @@
+this is an addition to LPJ-GUESS 4.0
+
+This uses the vegstruct output by joerg steinkamp (https://github.com/joergsteinkamp/newOutputModule4LPJGUESS)
+providing output in the individual level.
+It is adapted to be  compatible with LPJ-GUES 4.0. and cmass is added as a variable. 
+
+It also adds a second output module in the same style that gives output on the
+patch level.
+
+Note: you will find ghost trees with cmass = 0 and also small deviations from
+commonoutput. This due to rounding error.

@@ -26,7 +26,7 @@ set(headers
   soil.h
   soilinput.h
   ntransform.h
-  kdtree.h
+  vegstructoutput.h
   )
 
 set(source  
@@ -56,6 +56,7 @@ set(source
   soil.cpp
   soilinput.cpp
   ntransform.cpp
+  vegstructoutput.cpp
   )
 
 include(add_guess_sources)

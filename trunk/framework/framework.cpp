@@ -25,9 +25,11 @@
 #include "landcover.h"
 #include "bvoc.h"
 #include "commonoutput.h"
+#include "vegstructoutput.h"
 #include "soilmethane.h"
 
 #include <memory>
+#include <iostream>
 
 /// Prints the date and time together with the name of this simulation
 void print_logfile_heading() {
@@ -140,7 +142,8 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 		crop_rotation(stand);
 
 		if (date.islastday && date.islastmonth) {
-			// LAST DAY OF YEAR
+
+            // LAST DAY OF YEAR
 			stand.firstobj();
 			while (stand.isobj) {
 
