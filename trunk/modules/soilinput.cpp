@@ -109,12 +109,12 @@ coord SoilInput::find_closest_point(double searchradius, coord C) {
 coord SoilInput::find_closest_point_using_kd_tree(double searchradius, coord C) const {
     point<double, 2> closest_soil_data = soil_data_tree->nearest({C.first, C.second});
 
-    searchradius = 0.2;
-
     double distance_to_soil_point = closest_soil_data.distance({C.first, C.second});
+    searchradius = 0.001;
 
     dprintf("Using mineral soil data from %.3f, %.3f (distance %.3f, soil search radius %.3f)", closest_soil_data.get(0), closest_soil_data.get(1), distance_to_soil_point, searchradius);
     if(distance_to_soil_point < searchradius){
+
         return std::make_pair(closest_soil_data.get(0), closest_soil_data.get(1));
     } else {
         throw std::invalid_argument("Error! No soil data found.\n");
