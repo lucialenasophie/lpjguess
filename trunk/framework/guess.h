@@ -4027,6 +4027,8 @@ public:
 
 	// MEMBER VARIABLES
 
+    long seed_patch = randomseed;
+
 	/// id code in range 0-npatch for patch
 	int id;
 	/// reference to parent Stand object

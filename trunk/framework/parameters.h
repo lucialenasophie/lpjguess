@@ -84,7 +84,7 @@ typedef enum {ROOTDIST_FIXED, ROOTDIST_JACKSON} rootdisttype;
 
 ///Path for vegstruct
 extern xtring outputdirectory;
-
+extern int randomseed;
 
 /// Title for this run
 extern xtring title;

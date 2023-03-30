@@ -31,6 +31,7 @@
 #include "driver.h"
 #include "blaze.h"
 #include "simfire.h"
+#include <iostream>
 
 /// Function for generating random numbers
 /** Returns a random floating-point number in the range 0-1.
@@ -42,7 +43,6 @@
 double randfrac(long& seed) {
 
 	// Reference: Park & Miller 1988 CACM 31: 1192
-
 	const long modulus = 2147483647;
 	const double fmodulus = modulus;
 	const long multiplier = 16807;

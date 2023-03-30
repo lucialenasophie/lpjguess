@@ -27,6 +27,7 @@
 #include "commonoutput.h"
 #include "vegstructoutput.h"
 #include "soilmethane.h"
+#include "parameters.h"
 
 #include <memory>
 #include <iostream>
@@ -150,7 +151,7 @@ void simulate_day(Gridcell& gridcell, InputModule* input_module) {
 				// For each patch ...
 				Patch& patch = stand.getobj();
 				// Establishment, mortality and disturbance by fire
-				vegetation_dynamics(stand, patch);
+				vegetation_dynamics(stand, patch, gridcell);
 				stand.nextobj();
 			}
 		}
@@ -236,6 +237,10 @@ int framework(const CommandLineArguments& args) {
 			deserializer->deserialize_gridcell(gridcell);
 			// ...and jump to the restart year
 			date.year = state_year;
+
+            // Add randomseed to gridcell, otherwise old seed from state file is used
+            gridcell.seed = randomseed;
+
 		}
 
 		// Call input/output to obtain climate, insolation and CO2 for this

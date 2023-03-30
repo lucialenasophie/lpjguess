@@ -10,6 +10,7 @@
 #include <sstream>
 #include "config.h"
 #include "guess.h"
+#include <iostream>
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES WITH EXTERNAL LINKAGE
@@ -680,7 +681,7 @@ Stand::Stand(int i, Gridcell* gc, Soiltype& st, landcovertype landcoverX, int np
 	transfer_area_st = new double[nst];
 	for(int i=0;i<nst;i++)
 		transfer_area_st[i] = 0.0;
-	seed = 12345678;
+	seed = randomseed;
 
 	stid = 0;
 	pftid = -1;
@@ -1029,7 +1030,6 @@ Stand& Stand::clone(StandType& st, double fraction) {
 	// NB: the patch number is always that of the old stand, even if the new stand is a pasture or crop stand
 	Stand& new_stand = gridcell->create_stand(st.landcover, nobj);
 	int new_seed = new_stand.seed;
-
 	// ...and deserialize to that stand
 	ArchiveInStream ais(ss);
 	new_stand.serialize(ais);
@@ -2282,7 +2282,7 @@ Gridcell::Gridcell():climate(*this) {
 	nesterov_cur = 0.;
 
 	// Initialise BLAZE variables
-	seed = 12345678;
+	seed = randomseed;
 	for (int i=0;i<12;i++) {
 		monthly_burned_area[i] = 0.0;
 		monthly_fire_risk[i] = 0.0;
@@ -2308,7 +2308,6 @@ Stand& Gridcell::create_stand_lu(StandType& st, double fraction, int no_patch) {
 
 	Stand& stand = create_stand(st.landcover, no_patch);
 	stand.init_stand_lu(st, fraction);
-
 	return stand;
 }
 
@@ -2423,7 +2422,7 @@ void Gridcell::serialize(ArchiveStream& arch) {
 Stand& Gridcell::create_stand(landcovertype landcover, int no_patch) {
 	Stand* stand = new Stand(get_next_id(), this, soiltype, landcover, no_patch);
 
-	push_back(stand);
+    push_back(stand);
 
 	return *stand;
 }
