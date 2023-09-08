@@ -116,7 +116,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai lai1 lai2 lai3 lai4 lai5 lai6 lai7 lai8 lai9 lai10 lai11 lai12 dens dhist\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens dhist height ndindiv\n");
             }
         }
     }
@@ -133,16 +133,13 @@ namespace GuessOutput {
             double lat = gridcell.get_lat();
 
             int m{0}; //month iterator
-            double mlai[12];
 
-            // guess2008 - reset monthly and annual sums across patches each year
-            for (m = 0; m < 12; m++) {
-                mlai[m] = 0.0;
-            }
-
+            // init variables
             double patchpft_cmass{0};
             double patchpft_lai{0};
             double patchpft_dens{0};
+            double patchpft_height{0};
+            double patchpft_nindiv{0};
 
             // *** Loop through PFTs ***
 
@@ -166,14 +163,12 @@ namespace GuessOutput {
 
                         // Loop through Patches
                         while (stand.isobj) {
-
+                            //set everything to zero when starting new patch
                             patchpft_cmass = 0.0;
                             patchpft_dens = 0.0;
                             patchpft_lai = 0.0;
-
-                            for (m = 0; m < 12; m++) {
-                                mlai[m] = 0.0;
-                            }
+                            patchpft_height = 0.0;
+                            patchpft_nindiv = 0.0;
 
                             Patch& patch = stand.getobj();
                             Patchpft& patchpft = patch.pft[pft.id];
@@ -186,17 +181,18 @@ namespace GuessOutput {
 
                                 if (indiv.id!=-1 && indiv.alive) { // check alive?
 
-                                    if (indiv.pft.id==pft.id) {
+                                    if (indiv.pft.id==pft.id) { //add up variables
                                         patchpft_cmass += indiv.ccont();
                                         patchpft_lai += indiv.lai;
-                                        for (m=0;m<12;m++) {
-                                            mlai[m] += indiv.mlai[m];
-                                        }
+                                        patchpft_height += indiv.height; //tree height needs to divided by number of individuals later
                                         if (pft.lifeform==TREE) {
                                             patchpft_dens += indiv.densindiv;
                                         }
                                     }
+                                    patchpft_nindiv = patchpft_dens*patcharea+0.5;
                                 } // end check alive?
+
+
                                 vegetation.nextobj();
                             } // end of cohort loop
 
@@ -210,11 +206,10 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
-                                for (m=0;m<12;m++) {
-                                    fprintf(out_vegstruct_patch, " %6.2f", mlai[m]);
-                                }
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
                                 fprintf(out_vegstruct_patch, " %i", patch.disturbed);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_height/patchpft_nindiv);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_nindiv);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
                             else if (patch.disturbed){ //Make sure disturbance years are printed out even tho biomass is zero
@@ -224,11 +219,10 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
-                                for (m=0;m<12;m++) {
-                                    fprintf(out_vegstruct_patch, " %6.2f", mlai[m]);
-                                }
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
                                 fprintf(out_vegstruct_patch, " %i", patch.disturbed);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_height/patchpft_nindiv);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_nindiv);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
 

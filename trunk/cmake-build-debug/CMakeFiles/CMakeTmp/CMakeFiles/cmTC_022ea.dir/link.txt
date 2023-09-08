@@ -1,1 +1,0 @@
-/usr/bin/c++  -v CMakeFiles/cmTC_022ea.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_022ea 
