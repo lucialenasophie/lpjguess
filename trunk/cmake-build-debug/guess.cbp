@@ -342,6 +342,9 @@
 		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/modules/growth.h">
 			<Option target="guess"/>
 		</Unit>
+		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/modules/kdtree.h">
+			<Option target="guess"/>
+		</Unit>
 		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/modules/landcover.cpp">
 			<Option target="guess"/>
 		</Unit>
