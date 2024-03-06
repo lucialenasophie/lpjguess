@@ -44,7 +44,6 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/tests/cmake_install.cmake")
   include("/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/framework/cmake_install.cmake")
   include("/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/modules/cmake_install.cmake")
   include("/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug/cru/cmake_install.cmake")

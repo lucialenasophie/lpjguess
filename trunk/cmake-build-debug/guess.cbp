@@ -5,7 +5,7 @@
 		<Option title="guess"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="gcc"/>
-		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\tests\;CMake Files\framework\;CMake Files\modules\;CMake Files\cru\;CMake Files\libraries\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cmake\;CMake Files\framework\;CMake Files\modules\;CMake Files\cru\;CMake Files\libraries\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="/home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug"/>
@@ -342,9 +342,6 @@
 		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/modules/growth.h">
 			<Option target="guess"/>
 		</Unit>
-		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/modules/kdtree.h">
-			<Option target="guess"/>
-		</Unit>
 		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/modules/landcover.cpp">
 			<Option target="guess"/>
 		</Unit>
@@ -446,9 +443,6 @@
 		</Unit>
 		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/cmake/add_guess_sources.cmake">
 			<Option virtualFolder="CMake Files\cmake\"/>
-		</Unit>
-		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/tests/CMakeLists.txt">
-			<Option virtualFolder="CMake Files\tests\"/>
 		</Unit>
 		<Unit filename="/home/lucia/02_Science/lpjguess/code/trunk/framework/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\framework\"/>
