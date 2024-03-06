@@ -6,3 +6,4 @@ nyear_write: defines an external variable to control the year to start writing o
 vegstruct_output: Create output modules for subgridcell output (individuals or patches)
 dist_as_input: inputs disturbance probability as yearly input data instead of a constant probability
 mortality_output: adds information to flux.out about cause of mortality event
+hwds_patch: applied patch to read in harmonized world soil database map instead of standard soil map
