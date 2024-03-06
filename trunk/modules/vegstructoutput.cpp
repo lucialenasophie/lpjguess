@@ -116,7 +116,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens dhist height ndindiv\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens fpc dhist height ndindiv\n");
             }
         }
     }
@@ -140,6 +140,7 @@ namespace GuessOutput {
             double patchpft_dens{0};
             double patchpft_height{0};
             double patchpft_nindiv{0};
+            double patchpft_fpc{0};
 
             // *** Loop through PFTs ***
 
@@ -169,6 +170,7 @@ namespace GuessOutput {
                             patchpft_lai = 0.0;
                             patchpft_height = 0.0;
                             patchpft_nindiv = 0.0;
+                            patchpft_fpc = 0.0;
 
                             Patch& patch = stand.getobj();
                             Patchpft& patchpft = patch.pft[pft.id];
@@ -185,6 +187,7 @@ namespace GuessOutput {
                                         patchpft_cmass += indiv.ccont();
                                         patchpft_lai += indiv.lai;
                                         patchpft_height += indiv.height; //tree height needs to divided by number of individuals later
+                                        patchpft_fpc += indiv.fpc;
                                         if (pft.lifeform==TREE) {
                                             patchpft_dens += indiv.densindiv;
                                         }
@@ -207,6 +210,7 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_fpc);
                                 fprintf(out_vegstruct_patch, " %i", patch.disturbed);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_height/patchpft_nindiv);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_nindiv);
@@ -220,6 +224,7 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_fpc);
                                 fprintf(out_vegstruct_patch, " %i", patch.disturbed);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_height/patchpft_nindiv);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_nindiv);
