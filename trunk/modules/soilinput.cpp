@@ -13,6 +13,7 @@
 #include "soilinput.h"
 #include <fstream>
 #include <sstream>
+#include <list>
 
 
 namespace {
@@ -100,8 +101,27 @@ coord SoilInput::find_closest_point(double searchradius, coord C) {
 		}
 	}
 
-	fail("Coordinate at %f, %f could not be found in the soil map.\n",lon,lat);
+	fail("Coordinate at %f, %f could not be found in the soil map. Searchradius=%f, searchradius_soil=%f\n",lon,lat, searchradius, searchradius_soil);
 	return C;
+}
+
+
+coord SoilInput::find_closest_point_using_kd_tree(double searchradius, coord C) const {
+    point<double, 2> closest_soil_data = soil_data_tree->nearest({C.first, C.second});
+
+    searchradius = 0.1;
+
+    double distance_to_soil_point = closest_soil_data.distance({C.first, C.second});
+
+    dprintf("Using mineral soil data from %.3f, %.3f (distance %.3f, soil search radius %.3f)", closest_soil_data.get(0), closest_soil_data.get(1), distance_to_soil_point, searchradius);
+    if(distance_to_soil_point < searchradius){
+        return std::make_pair(closest_soil_data.get(0), closest_soil_data.get(1));
+    } else {
+        throw std::invalid_argument("Error! No soil data found.\n");
+        //todo catch this and call fail().
+        //        fail("no soil data found close enough!");
+    }
+
 }
 
 // Initialises the soil input class and determines the format of the supplied input file.
@@ -150,8 +170,18 @@ void SoilInput::load_lpj_soilcodes(const char* fname, const std::set<coord>& coo
 
 // Load mineral soil data from text file with columns describing the data. They need to be named:
 // lon, lat, sand, silt, clay, orgc, bulkdensity, ph, soilc, cn.
+// the fractions of sand, silt, and clay need to be specified as a decimal in [0; 1]
 void SoilInput::load_mineral_soils(const char* fname, const std::set<coord>& coords) {
-	std::ifstream ifs(fname, std::ifstream::in);
+    std::ifstream ifs(fname, std::ifstream::in);
+    try{
+        load_mineral_soils(ifs);
+    } catch(std::exception& e) {
+        fail("Error! Could not read soil file %s.\nReason: %s\n", fname, e.what());
+    }
+    ifs.close();
+}
+
+void SoilInput::load_mineral_soils(std::istream &ifs) {
 
 	std::string line;
 
@@ -196,7 +226,7 @@ void SoilInput::load_mineral_soils(const char* fname, const std::set<coord>& coo
 		}
 		else if (*it == "bulkdensity") {
 			bd_i = i;
-		}	
+		}
 		else if (*it == "cn") {
 			cn_i = i;
 		}
@@ -205,27 +235,31 @@ void SoilInput::load_mineral_soils(const char* fname, const std::set<coord>& coo
 		}
 	}
 	if (soilc_i == -1 && iforganicsoilproperties) {
-		fail("Error! No Soil C column found in %s. \nTip: do not use iforganicsoilproperties 1 together with a soilmap file without a SoilC column\n", fname);
+        throw std::invalid_argument("Error! No Soil C column found in mineral soil input file.\nTip: do not use iforganicsoilproperties 1 together with a soilmap file without a SoilC column\n");
 	}
 
 	// Create a empty vector T with header.size-2 elements
 	std::vector<double> T((unsigned int)header.size() - 2);
 
-	while (getline(ifs, line)) {
+    std::list<point<double, 2>> available_soil_data_points;
+
+    while (getline(ifs, line)) {
 
 		std::istringstream iss(line);
 		double lon, lat;
 		if (iss >> lon >> lat) {	// Get lon and lat from current line.
 			coord c(lon, lat);
 
-			if (!coords.empty() && coords.count(c) == 0) {
-				continue;
-			}
+//			if (!coords.empty() && coords.count(c) == 0) {
+//				continue;
+//			}
 
 			for (std::vector<double>::iterator it = T.begin(); it != T.end(); ++it) {
 				// Add the next values from the line to T
 				iss >> *it;
 			}
+
+            available_soil_data_points.push_back({lon, lat});
 
 			SoilDataMineral& soildata = mineral_map[c];
 			soildata.sand = T[sand_i];
@@ -239,28 +273,28 @@ void SoilInput::load_mineral_soils(const char* fname, const std::set<coord>& coo
 			else {
 				soildata.soilC = 0.0;
 			}
-				
-			// Not all data sets includes bulk density data, here it is set to a negative number if no column with that name. 
+
+			// Not all data sets includes bulk density data, here it is set to a negative number if no column with that name.
 			// TODO, set it to value: 1.6
-			if (bd_i<0) {	
+			if (bd_i<0) {
 				soildata.bulkdensity = (double)bd_i;
-			} 
+			}
 			else {
 				soildata.bulkdensity = T[bd_i];
 			}
 
-			if (mineral_map.size() == coords.size()) {
-				break;
-			}
+//			if (mineral_map.size() == coords.size()) {
+//				break;
+//			}
 		}
 	}
 
-	ifs.close();
+    soil_data_tree = new kdtree<double, 2>(std::begin(available_soil_data_points),std::end(available_soil_data_points));
 }
 
 // Get and set soil properties based on LPJ soil code.
 SoilInput::SoilProperties SoilInput::get_lpj(coord c) {
-
+    std::cout << " get lpj " << std::endl;
 	coord C = find_closest_point(searchradius_soil, c);
 
 	int soilcode = lpj_map[C];
@@ -309,9 +343,13 @@ SoilInput::SoilProperties SoilInput::get_lpj_organic_soil() {
 
 // Get and set soil properties based on mineral soil input.
 SoilInput::SoilProperties SoilInput::get_mineral(coord c) {
-	coord C = find_closest_point(searchradius_soil, c);
+	coord C = find_closest_point_using_kd_tree(searchradius_soil, c);
 	SoilDataMineral& soil = mineral_map[C];
 	double silt = 1.0 - soil.sand - soil.clay;
+
+    if(!(silt >= 0 && silt <= 1)){
+        throw std::invalid_argument("Silt fraction could not be computed from mineral soil file. Are the values in the file between 0 and 1?");
+    }
 
 	// Equation 1 from Cosby 1984
 	// Psi = Psi_s * (Theta/Theta_s)^b

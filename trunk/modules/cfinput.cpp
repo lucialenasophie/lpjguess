@@ -260,12 +260,12 @@ void check_compatible_timeseries(const GuessNC::CF::GridcellOrderedVariable* var
 
 	if (start1.get_year() != start2.get_year() ||
 		start1.get_month() != start2.get_month()) {
-		fail(error_message.c_str());
+		fail("start");
 	}
 
 	if (end1.get_year() != end2.get_year() ||
 		end1.get_month() != end2.get_month()) {
-		fail(error_message.c_str());
+		fail("end");
 	}
 
 	if (is_daily(var1) && is_daily(var2)) {
@@ -339,7 +339,8 @@ CFInput::CFInput()
 
 	// Declare instruction file parameters
 	declare_parameter("ndep_timeseries", &ndep_timeseries, 10, "Nitrogen deposition time series to use (historic, rcp26, rcp45, rcp60 or rcp85");
-	 SoilInput soilinput;
+//todo this makes no sense here, does it?
+    //	 SoilInput soilinput;
 }
 
 CFInput::~CFInput() {
@@ -457,7 +458,7 @@ void CFInput::init() {
 	std::ifstream ifs(file_gridlist, std::ifstream::in);
 
 	if (!ifs.good()) fail("CFInput::init: could not open %s for input",(char*)file_gridlist);
-
+    ListArray_id<Coord> gridlist_for_lu;
 	std::string line;
 	while (getline(ifs, line)) {
 
@@ -465,7 +466,7 @@ void CFInput::init() {
 		int rlat, rlon;
 		int landid;
 		std::string descrip;
-		Coord c;
+        CfCoord c;
 
 		std::istringstream iss(line);
 
@@ -473,8 +474,9 @@ void CFInput::init() {
 			if (iss >> landid) {
 				getline(iss, descrip);
 
-				c.landid = landid;
-			}
+				c.id = landid;
+                cf_temp->get_coords_for(landid, c.lon, c.lat);
+            }
 		}
 		else {
 			if (iss >> rlon >> rlat) {
@@ -482,6 +484,7 @@ void CFInput::init() {
 
 				c.rlat = rlat;
 				c.rlon = rlon;
+                cf_temp->get_coords_for(rlon, rlat, c.lon, c.lat);
 
 			}
 			else {
@@ -490,14 +493,21 @@ void CFInput::init() {
 		}
 		c.descrip = (xtring)trim(descrip).c_str();
 		gridlist.push_back(c);
+
+        Coord& c_lu = gridlist_for_lu.createobj();
+        c_lu.lat = c.lat;
+        c_lu.lon = c.lon;
+        // todo this is really error prone, since if it not set, the destructor will create a seg fault.
+        c_lu.descrip = (xtring)trim(descrip).c_str();
 	}
 
 	current_gridcell = gridlist.begin();
 
 	// Open landcover files
-	landcover_input.init();
+    //todo probably should call killall() after this and not inside the method.
+	landcover_input.init(gridlist_for_lu);
 	// Open management files
-	management_input.init();
+	management_input.init(gridlist_for_lu);
 
 	date.set_first_calendar_year(cf_temp->get_date_time(0).get_year() - nyear_spinup);
 
@@ -510,6 +520,10 @@ void CFInput::init() {
 
 	tprogress.settimer();
 	tmute.settimer(MUTESEC);
+
+    ifs.close();
+    gridlist_for_lu.killall();
+
 }
 
 bool CFInput::getgridcell(Gridcell& gridcell) {
@@ -605,9 +619,10 @@ bool CFInput::getgridcell(Gridcell& gridcell) {
 
 	dprintf("\nCommencing simulation for gridcell at (%g,%g)\n", lon, lat);
 	if (current_gridcell->descrip != "") {
-		dprintf("Description: %s\n", current_gridcell->descrip.c_str());
+		dprintf("Description: %s\n", (char*)current_gridcell->descrip);
 	}
-	dprintf("Using soil code and Nitrogen deposition for (%3.1f,%3.1f)\n", cru_lon, cru_lat);
+    // todo make the statement about soil where the soil is taken from really.
+	dprintf("Using Nitrogen deposition for (%3.3f,%3.3f)\n", cru_lon, cru_lat);
 
 	return true;
 }
@@ -616,7 +631,7 @@ bool CFInput::load_data_from_files(double& lon, double& lat){
 
 	int rlon = current_gridcell->rlon;
 	int rlat = current_gridcell->rlat;
-	int landid = current_gridcell->landid;
+	int landid = current_gridcell->id;
 
 	// Try to load the data from the NetCDF files
 
@@ -636,7 +651,7 @@ bool CFInput::load_data_from_files(double& lon, double& lat){
 		}
 	}
 	else {
-		if (!cf_temp->load_data_for(rlon, rlat) ||
+        if (!cf_temp->load_data_for(rlon, rlat) ||
 		    !cf_prec->load_data_for(rlon, rlat) ||
 		    !cf_insol->load_data_for(rlon, rlat) ||
 		    (cf_wetdays && !cf_wetdays->load_data_for(rlon, rlat)) ||
@@ -660,6 +675,7 @@ bool CFInput::load_data_from_files(double& lon, double& lat){
 		cf_temp->get_coords_for(rlon, rlat, lon, lat);
 	}
 
+    std::cout << "Successfully loaded climate data for indices " << rlon << ", " << rlat << ", corresponding to " << lon << ", " << lat << std::endl;
 	return true;
 }
 

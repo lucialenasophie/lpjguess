@@ -1,4 +1,0 @@
-/home/lucia/.local/share/JetBrains/Toolbox/apps/CLion/ch-0/213.6461.75/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /home/lucia/02_Science/lpjguess/code/trunk
--- Configuring done
--- Generating done
--- Build files have been written to: /home/lucia/02_Science/lpjguess/code/trunk/cmake-build-debug
