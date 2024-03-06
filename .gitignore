@@ -1,9 +1,5 @@
 cmake-build-debug/*
 guess.log
-**/CMakeFiles/*
-**/Makefile
-**/cmake_install.cmake
-CMakeCache.txt
 results_int
 data
 data_unused
@@ -11,4 +7,8 @@ data_unused
 02_output
 *.out
 branches
+
 tags
+.idea
+trunk/build/*
+**/test_ccont.cpp

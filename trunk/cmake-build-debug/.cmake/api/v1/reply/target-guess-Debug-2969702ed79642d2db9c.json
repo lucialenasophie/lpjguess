@@ -135,7 +135,6 @@
 				30,
 				31,
 				32,
-				60,
 				61,
 				62,
 				63,
@@ -161,16 +160,18 @@
 				83,
 				84,
 				85,
-				92,
-				93,
+				86,
+				87,
 				94,
-				102,
-				103,
+				95,
+				96,
 				104,
 				105,
 				106,
 				107,
-				108
+				108,
+				109,
+				110
 			]
 		}
 	],
@@ -267,19 +268,20 @@
 				57,
 				58,
 				59,
-				86,
-				87,
+				60,
 				88,
 				89,
 				90,
 				91,
-				95,
-				96,
+				92,
+				93,
 				97,
 				98,
 				99,
 				100,
-				101
+				101,
+				102,
+				103
 			]
 		},
 		{
@@ -301,7 +303,6 @@
 				30,
 				31,
 				32,
-				60,
 				61,
 				62,
 				63,
@@ -327,16 +328,18 @@
 				83,
 				84,
 				85,
-				92,
-				93,
+				86,
+				87,
 				94,
-				102,
-				103,
+				95,
+				96,
 				104,
 				105,
 				106,
 				107,
-				108
+				108,
+				109,
+				110
 			]
 		}
 	],
@@ -659,6 +662,11 @@
 		},
 		{
 			"backtrace" : 1,
+			"path" : "modules/vegstructoutput.h",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "modules/canexch.cpp",
 			"sourceGroupIndex" : 1
@@ -811,6 +819,12 @@
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
 			"path" : "modules/ntransform.cpp",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "modules/vegstructoutput.cpp",
 			"sourceGroupIndex" : 1
 		},
 		{

@@ -112,7 +112,7 @@ private:
 	std::vector<OutputModule*> modules;
 
 	/// Instruction file parameter deciding where to create output files
-	std::string outputdirectory;
+	std::string outdir;
 
 	/// Instruction file parameter deciding precision of coordinates in output
 	/** The parameter controls the number of digits after the decimal point */

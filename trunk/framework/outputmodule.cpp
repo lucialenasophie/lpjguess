@@ -11,6 +11,7 @@
 #include "outputmodule.h"
 #include "parameters.h"
 #include "guess.h"
+#include <iostream>
 
 namespace GuessOutput {
 
@@ -34,8 +35,7 @@ void OutputModule::close_output_table(Table& table) {
 ///
 
 OutputModuleContainer::OutputModuleContainer()
-	: coordinates_precision(2) {
-	declare_parameter("outputdirectory", &outputdirectory, 300, "Directory for the output files");
+	: coordinates_precision(2), outdir{(char*) outputdirectory} {
 	declare_parameter("coordinates_precision", &coordinates_precision, 0, 10, "Digits after decimal point in coordinates in output");
 }
 
@@ -43,7 +43,6 @@ OutputModuleContainer::~OutputModuleContainer() {
 	for (size_t i = 0; i < modules.size(); ++i) {
 		delete modules[i];
 	}
-
 	delete output_channel;
 }
 
@@ -55,10 +54,13 @@ void OutputModuleContainer::init() {
 	// We MUST have an output directory
 	if (outputdirectory=="") {
 		fail("No output directory given in the .ins file!");
-	}
+	} else {
+        outdir = (char*) outputdirectory;
+        std::cout << "Out dir is " << outdir.c_str();
+    }
 
 	// Create the output channel
-	output_channel = new FileOutputChannel(outputdirectory.c_str(),
+	output_channel = new FileOutputChannel(outdir.c_str(),
 	                                       coordinates_precision);
 
 	for (size_t i = 0; i < modules.size(); ++i) {
