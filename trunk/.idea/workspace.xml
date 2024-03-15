@@ -15,7 +15,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="46837882-7b1e-4b32-8178-190b7fc95371" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeSystem.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/3.21.1/CMakeSystem.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/cmake-build-debug/CMakeFiles/CMakeOutput.log" afterDir="false" />
     </list>
     <list id="6072e095-fa50-4d8a-876c-4926c254d2ca" name="HWSD_input_module" comment="Patch from Konni (03/23) to read in harmonized world soil database" />
     <list id="f386ab59-e5bf-4359-94b3-8c8493edc154" name="vecstruct_patch" comment="implemented patch provided by CZ/BM/Joerg Steinkamp" />

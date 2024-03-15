@@ -276,8 +276,8 @@ void NDepData::get_one_calendar_year(int calendar_year,
 
 void NDepData::set_to_pre_industrial() {
 
-	// pre-industrial total nitrogen depostion set to 2 kgN/ha/year [kgN m-2]
-	double dailyndep = 2000.0 / (4 * 365) * convert;
+	// pre-industrial total nitrogen depostion set to 0.75 kgN/ha/year [kgN m-2]
+	double dailyndep = 750.0 / (4 * 365) * convert;
 
 	for (int y=0; y<NYEAR_TOTNDEP; y++) {
 		for (int m=0; m<12; m++) {
