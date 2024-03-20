@@ -489,7 +489,7 @@ void establishment_guess(Stand& stand,Patch& patch) {
 
 					// Each grass PFT represented by just one individual in each patch
 					// Check whether this grass PFT already represented ...
-
+                    patch.pft[pft.id].exp_est = 1; //set this to one so that it outputs something
 					present=false;
 					vegetation.firstobj();
 					while (vegetation.isobj && !present) {
@@ -600,6 +600,7 @@ void establishment_guess(Stand& stand,Patch& patch) {
 
 					if (ifstochestab && !force_planting || vegmode==INDIVIDUAL) nsapling=randpoisson(est, stand.seed);
 					else nsapling=est;
+                    patch.pft[pft.id].exp_est = est;
 
 					if (vegmode==COHORT) {
 
@@ -1563,7 +1564,7 @@ void vegetation_dynamics(Stand& stand,Patch& patch) {
 										   date.year <= patch.soil.solvesomcent_endyr;
 
 			if (patch.age && !during_century_solvesom && date.year != stand.clone_year) {
-				disturbance(patch,1.0 / distinterval);
+				disturbance(patch, 1.0 / distinterval);
 				if (patch.disturbed) {
 					return; // no mortality or establishment this year
 				}

@@ -3892,6 +3892,8 @@ public:
 	bool establish;
 	/// running total for number of saplings of this PFT to establish (cohort mode)
 	double nsapling;
+    /// expected value of establishment
+    int exp_est;
 	/// leaf-derived litter for PFT on modelled area basis (kgC/m2)
 	double litter_leaf;
 	/// fine root-derived litter for PFT on modelled area basis (kgC/m2)

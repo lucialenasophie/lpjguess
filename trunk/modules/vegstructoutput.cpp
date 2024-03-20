@@ -116,7 +116,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT cmass lai dens fpc dhist height ndindiv\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT age cmass lai dens fpc height ndindiv exp_est\n");
             }
         }
     }
@@ -207,13 +207,14 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %i ",    stand.id);
                                 fprintf(out_vegstruct_patch, " %i ",    patch.id);
                                 fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
+                                fprintf(out_vegstruct_patch, " %i ", patch.age);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_fpc);
-                                fprintf(out_vegstruct_patch, " %i", patch.disturbed);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_height/patchpft_nindiv);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_nindiv);
+                                fprintf(out_vegstruct_patch, " %i ",    patch.pft[pft.id].exp_est);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
                             else if (patch.disturbed){ //Make sure disturbance years are printed out even tho biomass is zero
@@ -221,13 +222,14 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %i ",    stand.id);
                                 fprintf(out_vegstruct_patch, " %i ",    patch.id);
                                 fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
+                                fprintf(out_vegstruct_patch, " %i ", patch.age);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_fpc);
-                                fprintf(out_vegstruct_patch, " %i", patch.disturbed);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_height/patchpft_nindiv);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_nindiv);
+                                fprintf(out_vegstruct_patch, " %i ",  patch.pft[pft.id].exp_est);
                                 fprintf(out_vegstruct_patch, "\n");
                             }
 
