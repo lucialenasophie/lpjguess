@@ -18,8 +18,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/guess" beforeDir="false" afterPath="$PROJECT_DIR$/build/guess" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/submit.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build/submit.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/framework/guess.h" beforeDir="false" afterPath="$PROJECT_DIR$/framework/guess.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/modules/vegdynam.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/modules/vegdynam.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/modules/vegstructoutput.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/modules/vegstructoutput.cpp" afterDir="false" />
     </list>
     <list id="6072e095-fa50-4d8a-876c-4926c254d2ca" name="HWSD_input_module" comment="Patch from Konni (03/23) to read in harmonized world soil database" />
@@ -107,7 +105,13 @@
       <workItem from="1679230135769" duration="1000" />
       <workItem from="1689147752196" duration="723000" />
       <workItem from="1710497699944" duration="1000" />
-      <workItem from="1710852856012" duration="6591000" />
+      <workItem from="1710852856012" duration="7271000" />
+      <workItem from="1711353673286" duration="771000" />
+      <workItem from="1711444709336" duration="1345000" />
+      <workItem from="1711527809949" duration="948000" />
+      <workItem from="1714488369609" duration="340000" />
+      <workItem from="1717508676708" duration="739000" />
+      <workItem from="1717660182005" duration="4220000" />
     </task>
     <servers />
   </component>

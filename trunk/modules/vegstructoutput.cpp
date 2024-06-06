@@ -116,7 +116,7 @@ namespace GuessOutput {
                      full_path.c_str());
             } else {
                 dprintf("dummy\n");
-                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT age cmass lai dens fpc height ndindiv exp_est\n");
+                fprintf(out_vegstruct_patch, "Lon Lat Year SID PID PFT age cmass anpp lai dens fpc height ndindiv exp_est\n");
             }
         }
     }
@@ -141,6 +141,7 @@ namespace GuessOutput {
             double patchpft_height{0};
             double patchpft_nindiv{0};
             double patchpft_fpc{0};
+            double patchpft_anpp{0};
 
             // *** Loop through PFTs ***
 
@@ -171,6 +172,7 @@ namespace GuessOutput {
                             patchpft_height = 0.0;
                             patchpft_nindiv = 0.0;
                             patchpft_fpc = 0.0;
+                            patchpft_anpp = 0.0;
 
                             Patch& patch = stand.getobj();
                             Patchpft& patchpft = patch.pft[pft.id];
@@ -188,6 +190,7 @@ namespace GuessOutput {
                                         patchpft_lai += indiv.lai;
                                         patchpft_height += indiv.height; //tree height needs to divided by number of individuals later
                                         patchpft_fpc += indiv.fpc;
+                                        patchpft_anpp += indiv.anpp;
                                         if (pft.lifeform==TREE) {
                                             patchpft_dens += indiv.densindiv;
                                         }
@@ -199,16 +202,15 @@ namespace GuessOutput {
                                 vegetation.nextobj();
                             } // end of cohort loop
 
-
                             // Make sure to only write output if we have individuals of that PFT present.
-                            if (patchpft_cmass > 0)
-                            {
+
                                 fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
                                 fprintf(out_vegstruct_patch, " %i ",    stand.id);
                                 fprintf(out_vegstruct_patch, " %i ",    patch.id);
                                 fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
                                 fprintf(out_vegstruct_patch, " %i ", patch.age);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
+                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_anpp);
                                 fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_fpc);
@@ -216,22 +218,7 @@ namespace GuessOutput {
                                 fprintf(out_vegstruct_patch, " %6.2f ", patchpft_nindiv);
                                 fprintf(out_vegstruct_patch, " %i ",    patch.pft[pft.id].exp_est);
                                 fprintf(out_vegstruct_patch, "\n");
-                            }
-                            else if (patch.disturbed){ //Make sure disturbance years are printed out even tho biomass is zero
-                                fprintf(out_vegstruct_patch, "%7.2f %6.2f %4i ", lon, lat, date.get_calendar_year() );
-                                fprintf(out_vegstruct_patch, " %i ",    stand.id);
-                                fprintf(out_vegstruct_patch, " %i ",    patch.id);
-                                fprintf(out_vegstruct_patch, " %10s", (char*) pft.name);
-                                fprintf(out_vegstruct_patch, " %i ", patch.age);
-                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_cmass);
-                                fprintf(out_vegstruct_patch, " %6.2f", patchpft_lai);
-                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_dens);
-                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_fpc);
-                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_height/patchpft_nindiv);
-                                fprintf(out_vegstruct_patch, " %6.2f ", patchpft_nindiv);
-                                fprintf(out_vegstruct_patch, " %i ",  patch.pft[pft.id].exp_est);
-                                fprintf(out_vegstruct_patch, "\n");
-                            }
+
 
                             stand.nextobj();
                         } // end of patch loop
